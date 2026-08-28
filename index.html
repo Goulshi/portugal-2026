@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portugal Roadtrip 2026</title>
+<style>
+  :root {
+    --c-drive:  #854F0B; --bg-drive:  #FAEEDA;
+    --c-picos:  #0F6E56; --bg-picos:  #E1F5EE;
+    --c-alvor:  #534AB7; --bg-alvor:  #EEEDFE;
+    --c-lis:    #993556; --bg-lis:    #FBEAF0;
+    --c-loire:  #3B6D11; --bg-loire:  #EAF3DE;
+    --c-pause:  #1D9E75; --c-act:    #D85A30;
+    --c-sleep:  #534AB7; --c-text:   #1A1A1A;
+    --c-sub:    #666660; --c-border: #E0DED8;
+    --c-bg:     #F7F7F5; --c-white:  #ffffff;
+    --c-header: #1A1A2E; --c-green:  #1D9E75;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--c-bg); color: var(--c-text); font-size: 14px; }
+
+  /* ── NAV ── */
+  nav { background: var(--c-header); padding: 0 24px; display: flex; align-items: center; gap: 4px; overflow-x: auto; }
+  nav a { color: #AAA; text-decoration: none; padding: 14px 16px; font-size: 13px; white-space: nowrap; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; cursor: pointer; }
+  nav a:hover { color: #fff; }
+  nav a.active { color: #fff; border-bottom-color: #fff; }
+
+  /* ── HERO ── */
+  .hero { background: var(--c-header); color: #fff; padding: 36px 24px 28px; }
+  .hero h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .hero p  { color: #AAA; margin-top: 6px; font-size: 13px; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 24px; }
+  .stat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 700; }
+  .stat-lbl { font-size: 11px; color: #AAA; margin-top: 2px; }
+
+  /* Voorbereiding hero variant */
+  .hero-vb { background: var(--c-header); color: #fff; padding: 28px 24px 22px; }
+  .hero-vb h1 { font-size: 22px; font-weight: 700; }
+  .hero-vb p  { color: #AAA; margin-top: 5px; font-size: 13px; }
+  .progress-bar-wrap { margin-top: 16px; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: #AAA; margin-bottom: 6px; }
+  .progress-track { background: rgba(255,255,255,.12); border-radius: 6px; height: 8px; overflow: hidden; }
+  .progress-fill  { background: var(--c-green); height: 100%; border-radius: 6px; transition: width .4s ease; }
+
+  /* ── PAGE SWITCHER ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── MAIN ── */
+  main { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+
+  /* ── REISSCHEMA: TOGGLE ── */
+  .toggle-bar { display: flex; gap: 8px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+  .toggle-label { font-size: 12px; font-weight: 600; color: var(--c-sub); margin-right: 4px; }
+  .toggle-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--c-border); background: var(--c-white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--c-sub); transition: all .2s; }
+  .toggle-btn.active { background: var(--c-header); color: #fff; border-color: var(--c-header); }
+  .toggle-btn:hover:not(.active) { border-color: #888; color: var(--c-text); }
+  .scenario { display: none; }
+  .scenario.visible { display: block; }
+
+  /* ── DAG BLOK ── */
+  .dag { margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid var(--c-border); }
+  .dag-header { padding: 12px 16px; color: #fff; font-weight: 600; font-size: 13px; }
+  .dag-header.drive { background: var(--c-drive); }
+  .dag-header.picos { background: var(--c-picos); }
+  .dag-header.alvor { background: var(--c-alvor); }
+  .dag-header.lis   { background: var(--c-lis);   }
+  .dag-header.loire { background: var(--c-loire); }
+  .dag-header.night { background: #2D2D4E; }
+
+  /* ── TIMELINE ── */
+  .tl-row { display: grid; grid-template-columns: 56px 1fr; background: var(--c-white); border-top: 1px solid var(--c-border); }
+  .tl-time { font-size: 11px; font-weight: 600; color: var(--c-sub); text-align: right; padding: 12px 10px 12px 8px; display: flex; align-items: center; justify-content: flex-end; }
+  .tl-body { padding: 10px 14px; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; color: #fff; letter-spacing: .3px; }
+  .pill.drive   { background: var(--c-drive); }
+  .pill.pause   { background: var(--c-pause); }
+  .pill.act     { background: var(--c-act);   }
+  .pill.sleep   { background: var(--c-sleep); }
+  .pill.night   { background: #2D2D4E; }
+  .pill.dag-c   { background: var(--c-alvor); }
+  .pill.lis-c   { background: var(--c-lis);   }
+  .pill.loire-c { background: var(--c-loire); }
+  .tl-title { font-size: 13px; font-weight: 600; color: var(--c-text); margin-bottom: 2px; }
+  .tl-sub   { font-size: 12px; color: var(--c-sub); }
+
+  /* ── STAT BAR ── */
+  .stat-bar { display: grid; grid-template-columns: repeat(3,1fr); background: var(--c-bg); border-top: 1px solid var(--c-border); }
+  .sb-item  { text-align: center; padding: 10px 8px; border-right: 1px solid var(--c-border); }
+  .sb-item:last-child { border-right: none; }
+  .sb-val { font-size: 15px; font-weight: 700; color: var(--c-text); }
+  .sb-lbl { font-size: 10px; color: var(--c-sub); margin-top: 1px; }
+
+  /* ── NOTE ── */
+  .note { background: #FFFBEA; border: 1px solid #D4A017; border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-size: 12px; color: #7A5C00; }
+  .note strong { font-weight: 700; }
+
+  /* ── ROUTE BAR ── */
+  .route-bar { display: flex; align-items: center; gap: 0; margin: 0 0 20px; flex-wrap: wrap; }
+  .route-stop { background: var(--c-white); border: 1px solid var(--c-border); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
+  .route-arrow { color: var(--c-sub); padding: 0 6px; font-size: 14px; }
+
+  /* ── BUDGET ── */
+  .budget-section { margin-top: 32px; }
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .budget-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+  .bstat { background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px; text-align: center; }
+  .bstat-val { font-size: 20px; font-weight: 700; }
+  .bstat-lbl { font-size: 11px; color: var(--c-sub); margin-top: 2px; }
+  table.budget { width: 100%; border-collapse: collapse; background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; overflow: hidden; }
+  table.budget th { background: var(--c-bg); font-size: 11px; font-weight: 600; color: var(--c-sub); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--c-border); }
+  table.budget th:last-child { text-align: right; }
+  table.budget td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid var(--c-border); }
+  table.budget td:last-child { text-align: right; font-weight: 600; }
+  table.budget tr:last-child td { border-bottom: none; }
+  table.budget tr.total  td { background: #EEEDFE; font-weight: 700; }
+  table.budget tr.buffer td { color: var(--c-picos); font-weight: 600; }
+
+  /* ── VOORBEREIDING STYLES ── */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; font-weight: 600; color: var(--c-sub); }
+  .filter-btn { padding: 6px 14px; border-radius: 16px; border: 1.5px solid var(--c-border); background: var(--c-white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--c-sub); transition: all .15s; }
+  .filter-btn:hover { border-color: #888; color: var(--c-text); }
+  .filter-btn.active { background: var(--c-header); color: #fff; border-color: var(--c-header); }
+  .sectie { margin-bottom: 16px; border-radius: 10px; border: 1px solid var(--c-border); overflow: hidden; }
+  .sectie-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; user-select: none; background: var(--c-white); transition: background .15s; }
+  .sectie-header:hover { background: #F0EEE8; }
+  .sectie-header-left { display: flex; align-items: center; gap: 10px; }
+  .sectie-icon { font-size: 18px; width: 28px; text-align: center; }
+  .sectie-title { font-size: 14px; font-weight: 700; color: var(--c-text); }
+  .sectie-badge { font-size: 11px; color: var(--c-sub); background: var(--c-bg); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--c-border); }
+  .sectie-chevron { font-size: 12px; color: var(--c-sub); transition: transform .2s; }
+  .sectie-chevron.open { transform: rotate(180deg); }
+  .sectie-body { display: none; border-top: 1px solid var(--c-border); }
+  .sectie-body.open { display: block; }
+  .subsectie { border-bottom: 1px solid var(--c-border); }
+  .subsectie:last-child { border-bottom: none; }
+  .subsectie-title { font-size: 11px; font-weight: 700; color: var(--c-sub); text-transform: uppercase; letter-spacing: .6px; padding: 10px 16px 4px; background: var(--c-bg); }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 9px 16px; background: var(--c-white); border-top: 1px solid var(--c-border); cursor: pointer; transition: background .1s; }
+  .check-item:first-of-type { border-top: none; }
+  .check-item:hover { background: #FAFAF8; }
+  .check-item.done .check-label { text-decoration: line-through; color: var(--c-sub); }
+  .check-box { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--c-border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; background: var(--c-white); }
+  .check-item.done .check-box { background: var(--c-green); border-color: var(--c-green); }
+  .check-tick { color: #fff; font-size: 11px; display: none; }
+  .check-item.done .check-tick { display: block; }
+  .check-label { font-size: 13px; color: var(--c-text); line-height: 1.4; flex: 1; }
+  .check-sub { font-size: 11px; color: var(--c-sub); margin-top: 2px; display: block; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 6px; margin-left: 6px; vertical-align: middle; }
+  .tag-amani { background: #FBEAF0; color: var(--c-lis); }
+  .tag-auto  { background: #FAEEDA; color: var(--c-drive); }
+  .tag-doc   { background: #E6F1FB; color: #0C447C; }
+  .tag-med   { background: #E1F5EE; color: var(--c-picos); }
+  .tag-tech  { background: #EEEDFE; color: var(--c-alvor); }
+  .sectie-done-banner { display: none; background: #E1F5EE; color: #085041; font-size: 12px; font-weight: 600; padding: 8px 16px; text-align: center; border-top: 1px solid #1D9E75; }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(3,1fr); }
+    .budget-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    @page { size: A4 portrait; margin: 12mm 14mm 14mm 14mm; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; font-size: 9px; }
+    nav { display: none !important; }
+    .toggle-bar { display: none !important; }
+    .filter-bar { display: none !important; }
+    .scenario { display: block !important; }
+    .scenario:not(.visible) { display: none !important; }
+    .page { display: block !important; }
+    .hero,.hero-vb { background: #1A1A2E !important; color: #fff !important; padding: 10px 14px 8px; margin-bottom: 6px; }
+    .hero h1,.hero-vb h1 { font-size: 14px; }
+    .hero p,.hero-vb p { font-size: 8px; margin-top: 3px; }
+    .stats { gap: 5px; margin-top: 8px; }
+    .stat { padding: 5px 4px; border-radius: 4px; }
+    .stat-val { font-size: 11px; } .stat-lbl { font-size: 7px; }
+    .progress-bar-wrap { display: none; }
+    main { padding: 0; max-width: 100%; }
+    .route-bar { margin: 5px 0 6px; }
+    .route-stop { padding: 3px 7px; font-size: 8px; border-radius: 4px; }
+    .route-arrow { font-size: 9px; padding: 0 3px; }
+    .dag { margin-bottom: 5px; border-radius: 5px; break-inside: avoid; page-break-inside: avoid; }
+    .dag-header { padding: 5px 10px; font-size: 9px; }
+    .tl-row { grid-template-columns: 40px 1fr; }
+    .tl-time { font-size: 8px; padding: 4px 6px 4px 4px; }
+    .tl-body { padding: 4px 10px; }
+    .pill { font-size: 7px; padding: 1px 5px; margin-bottom: 2px; border-radius: 6px; }
+    .tl-title { font-size: 8.5px; margin-bottom: 1px; } .tl-sub { font-size: 7.5px; }
+    .stat-bar { border-top: 1px solid #D0CEC8; }
+    .sb-item { padding: 4px 6px; } .sb-val { font-size: 9px; } .sb-lbl { font-size: 7px; }
+    .note { padding: 5px 10px; font-size: 7.5px; margin-bottom: 6px; }
+    .budget-section { margin-top: 8px; } .section-title { font-size: 10px; margin-bottom: 5px; }
+    .budget-grid { gap: 5px; margin-bottom: 6px; }
+    .bstat { padding: 6px; border-radius: 4px; } .bstat-val { font-size: 11px; } .bstat-lbl { font-size: 7px; }
+    table.budget { break-inside: avoid; page-break-inside: avoid; }
+    table.budget th { font-size: 7.5px; padding: 4px 8px; }
+    table.budget td { font-size: 8px; padding: 3px 8px; }
+    .sectie { margin-bottom: 5px; break-inside: avoid; }
+    .sectie-body { display: block !important; }
+    .sectie-chevron { display: none; }
+    .sectie-header { padding: 6px 12px; }
+    .sectie-title { font-size: 10px; }
+    .subsectie-title { font-size: 8px; padding: 5px 12px 2px; }
+    .check-item { padding: 4px 12px; }
+    .check-label { font-size: 8px; } .check-sub { font-size: 7px; }
+    .check-box { width: 12px; height: 12px; border-radius: 2px; }
+    .check-tick { font-size: 8px; }
+    .tag { font-size: 7px; padding: 1px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a onclick="showPage('reisschema')" id="nav-reisschema" class="active">📋 Reisschema</a>
+  <a onclick="showPage('voorbereiding')" id="nav-voorbereiding">✅ Voorbereiding</a>
+  <a onclick="showPage('placeholder')" id="nav-alvor">🏖️ Alvor</a>
+  <a onclick="showPage('placeholder')" id="nav-lissabon">🏙️ Lissabon</a>
+  <a onclick="showPage('placeholder')" id="nav-loire">🏰 Loire</a>
+  <a onclick="showPage('placeholder')" id="nav-budget">💰 Budget</a>
+  <a onclick="showPage('placeholder')" id="nav-paklijst">📦 Paklijst</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: REISSCHEMA                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-reisschema" class="page active">
+
+  <div class="hero">
+    <h1>🇵🇹 Portugal Roadtrip 2026</h1>
+    <p>Mehdi · Mounia · Amani &nbsp;|&nbsp; Heffen → Picos → Alvor → Lissabon → Loire → Heffen</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">15</div><div class="stat-lbl">Nachten weg</div></div>
+      <div class="stat"><div class="stat-val">~4.400 km</div><div class="stat-lbl">Totale afstand</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-lbl">Verlofdagen</div></div>
+      <div class="stat"><div class="stat-val">€3.265</div><div class="stat-lbl">Geraamd</div></div>
+      <div class="stat"><div class="stat-val">€735</div><div class="stat-lbl">Buffer</div></div>
+    </div>
+  </div>
+
+  <main>
+    <div class="toggle-bar">
+      <span class="toggle-label">Vertrekoptie:</span>
+      <button class="toggle-btn active" onclick="setScenario('a')">🅐 &nbsp;Za 5 sept — 06:30</button>
+      <button class="toggle-btn" onclick="setScenario('b')">🅑 &nbsp;Vr 4 sept — 20:00 (nachtrit)</button>
+    </div>
+    <div id="scenario-a" class="scenario visible">
+      <div class="route-bar">
+        <div class="route-stop">🏠 Heffen</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-picos);color:var(--c-picos)">🏔️ Picos</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-alvor);color:var(--c-alvor)">🏖️ Alvor</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-lis);color:var(--c-lis)">🏙️ Lissabon</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-loire);color:var(--c-loire)">🏰 Loire</div><div class="route-arrow">→</div>
+        <div class="route-stop">🏠 Heffen</div>
+      </div>
+      <div class="dag"><div class="dag-header drive">Za 5 september — Mechelen → Peñas Arriba (Picos de Europa)</div><div class="tl-row"><div class="tl-time">06:30</div><div class="tl-body"><span class="pill drive">VERTREK</span><div class="tl-title">Mechelen</div><div class="tl-sub">Auto volledig geladen, Amani gevoed voor vertrek</div></div></div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill pause">PAUZE 1 — 30 min</span><div class="tl-title">Reims (~230 km)</div><div class="tl-sub">Ontbijt, koffie, Amani laten bewegen</div></div></div><div class="tl-row"><div class="tl-time">09:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Reims → Brive-la-Gaillarde (~400 km)</div><div class="tl-sub">Via A6/A71, door Bourgogne</div></div></div><div class="tl-row"><div class="tl-time">13:15</div><div class="tl-body"><span class="pill pause">PAUZE 2 — 60 min</span><div class="tl-title">Brive-la-Gaillarde (~630 km)</div><div class="tl-sub">Middagmaal, luiers, bewegen — picknick of supermarkt</div></div></div><div class="tl-row"><div class="tl-time">14:15</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Brive → San Sebastián (~380 km)</div><div class="tl-sub">Via Bordeaux, grensovergang Hendaye</div></div></div><div class="tl-row"><div class="tl-time">17:00</div><div class="tl-body"><span class="pill pause">PAUZE 3 — 20 min</span><div class="tl-title">San Sebastián (~900 km)</div><div class="tl-sub">Tanken in Spanje (goedkoper), koffie, frisse lucht</div></div></div><div class="tl-row"><div class="tl-time">17:20</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">San Sebastián → Potes (~150 km)</div><div class="tl-sub">Via A-8, laatste 40 km bochtig — rustig aan</div></div></div><div class="tl-row"><div class="tl-time">20:00</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Peñas Arriba, Lon (Potes)</div><div class="tl-sub">Inchecken, avondeten in het restaurant ter plaatse</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~10,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~1,5u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.080 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header picos">Zo 6 september — Fuente Dé (Picos) → Alvor</div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill act">ACTIVITEIT — 2u</span><div class="tl-title">Fuente Dé kabelbaan</div><div class="tl-sub">30 min rijden vanuit Potes. Amani gratis, spectaculair uitzicht</div></div></div><div class="tl-row"><div class="tl-time">11:30</div><div class="tl-body"><span class="pill pause">LUNCH — 60 min</span><div class="tl-title">Potes of Lon</div><div class="tl-sub">Lokale cocido of fabada — laatste rustig eten voor het rijblok</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Potes → Porto omgeving (~280 km)</div><div class="tl-sub">Via A-8 westwaarts langs Cantabrische kust richting Galicië</div></div></div><div class="tl-row"><div class="tl-time">15:30</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Porto omgeving (~430 km)</div><div class="tl-sub">Koffie, Amani stretchen — tanken voor Portugese grens</div></div></div><div class="tl-row"><div class="tl-time">16:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Porto → Alvor (~280 km)</div><div class="tl-sub">Via A1/A2 richting Lissabon, dan A2 verder naar Algarve</div></div></div><div class="tl-row"><div class="tl-time">19:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Alvor — Prainha Beach</div><div class="tl-sub">Inchecken, eerste diner in Alvor</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~5,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~3,5u</div><div class="sb-lbl">Pauzes + activiteit</div></div><div class="sb-item"><div class="sb-val">~560 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div id="shared-a"></div>
+    </div>
+    <div id="scenario-b" class="scenario">
+      <div class="route-bar">
+        <div class="route-stop">🏠 Heffen</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:#2D2D4E;color:#2D2D4E">🌙 Nachtrit</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-picos);color:var(--c-picos)">🏔️ Picos</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-alvor);color:var(--c-alvor)">🏖️ Alvor</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-lis);color:var(--c-lis)">🏙️ Lissabon</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-loire);color:var(--c-loire)">🏰 Loire</div><div class="route-arrow">→</div>
+        <div class="route-stop">🏠 Heffen</div>
+      </div>
+      <div class="note"><strong>💡 Scenario B — Nachtrit:</strong> Amani rijdt in pyjama en slaapt de nacht grotendeels door. Bevestig vooraf bij Peñas Arriba dat je vroeg kunt inchecken (~07:30u). Wissel bestuurder af onderweg.</div>
+      <div class="dag"><div class="dag-header night">Vr 4 september (avond) – Za 5 september (ochtend) — Mechelen → Peñas Arriba</div><div class="tl-row"><div class="tl-time">20:00</div><div class="tl-body"><span class="pill night">VERTREK</span><div class="tl-title">Mechelen</div><div class="tl-sub">Amani in pyjama in autostoeltje — auto op voorhand ingepakt</div></div></div><div class="tl-row"><div class="tl-time">23:00</div><div class="tl-body"><span class="pill pause">PAUZE — 15 min</span><div class="tl-title">Reims (~230 km)</div><div class="tl-sub">Tanken, koffie voor bestuurder — Amani slaapt door</div></div></div><div class="tl-row"><div class="tl-time">Za 02:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Brive-la-Gaillarde (~630 km)</div><div class="tl-sub">Wisseling bestuurder, korte rust, frisse lucht</div></div></div><div class="tl-row"><div class="tl-time">05:00</div><div class="tl-body"><span class="pill pause">PAUZE — 15 min</span><div class="tl-title">San Sebastián (~900 km)</div><div class="tl-sub">Tanken in Spanje (goedkoper), koffie</div></div></div><div class="tl-row"><div class="tl-time">07:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Peñas Arriba, Lon (Potes)</div><div class="tl-sub">Vroeg inchecken (bevestig vooraf) — ontbijt ter plaatse</div></div></div><div class="tl-row"><div class="tl-time">08:00</div><div class="tl-body"><span class="pill pause">RUST</span><div class="tl-title">Slaap/rust in hotel — 3 à 4u</div><div class="tl-sub">Iedereen bijslapen voor de daguitstap</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~10u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~1u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.080 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header picos">Za 5 september (namiddag) + Zo 6 september — Picos → Alvor</div><div class="tl-row"><div class="tl-time">Za 12:00</div><div class="tl-body"><span class="pill act">ACTIVITEIT — 2u</span><div class="tl-title">Fuente Dé kabelbaan</div><div class="tl-sub">Na rust: 30 min rijden vanuit Potes. Amani gratis, spectaculair uitzicht</div></div></div><div class="tl-row"><div class="tl-time">14:30</div><div class="tl-body"><span class="pill pause">LUNCH — 60 min</span><div class="tl-title">Potes of Lon</div><div class="tl-sub">Lokale cocido of fabada — avondeten ook in Peñas Arriba</div></div></div><div class="tl-row"><div class="tl-time">Zo 09:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Potes → Porto omgeving (~280 km)</div><div class="tl-sub">Via A-8 westwaarts langs Cantabrische kust</div></div></div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Porto omgeving (~430 km)</div><div class="tl-sub">Koffie, Amani stretchen — tanken voor Portugese grens</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Porto → Alvor (~280 km)</div><div class="tl-sub">Via A1/A2 richting Lissabon, dan A2 verder naar Algarve</div></div></div><div class="tl-row"><div class="tl-time">16:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Alvor — Prainha Beach</div><div class="tl-sub">Inchecken, eerste diner in Alvor — 3u vroeger dan Optie A ✓</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~5,5u</div><div class="sb-lbl">Netto rijden (zo)</div></div><div class="sb-item"><div class="sb-val">~1u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~560 km</div><div class="sb-lbl">Afstand (zo)</div></div></div></div>
+      <div id="shared-b"></div>
+    </div>
+    <template id="shared-days">
+      <div class="dag"><div class="dag-header alvor">Wo 16 september — Alvor uitchecken → Lissabon</div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill dag-c">CHECKOUT</span><div class="tl-title">Alvor middag</div><div class="tl-sub">Bagage inladen, laatste zwempje of lunch in Alvor</div></div></div><div class="tl-row"><div class="tl-time">13:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Alvor → Lissabon (~280 km)</div><div class="tl-sub">Via A2 noordwaarts, vlak en snel</div></div></div><div class="tl-row"><div class="tl-time">15:30</div><div class="tl-body"><span class="pill pause">PAUZE — 20 min</span><div class="tl-title">Setúbal / Palmela regio</div><div class="tl-sub">Koffie, Amani even uitlaten voor stadsaankomst</div></div></div><div class="tl-row"><div class="tl-time">15:50</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Laatste stuk naar Lissabon centrum</div><div class="tl-sub">Stadsverkeer — inchecken parking hotel</div></div></div><div class="tl-row"><div class="tl-time">16:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Lissabon — nacht 1</div><div class="tl-sub">Inchecken, vooravond in Alfama of Bairro Alto</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~2,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~20 min</div><div class="sb-lbl">Pauze</div></div><div class="sb-item"><div class="sb-val">~280 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header lis">Vr 18 september — Lissabon → Loire/Tours regio</div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill lis-c">VERTREK</span><div class="tl-title">Lissabon na ontbijt</div><div class="tl-sub">Via IC19 richting A1 noord</div></div></div><div class="tl-row"><div class="tl-time">11:30</div><div class="tl-body"><span class="pill pause">PAUZE 1 — 30 min</span><div class="tl-title">Coimbra / Aveiro (~230 km)</div><div class="tl-sub">Koffie, Amani bewegen, tanken</div></div></div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Aveiro → Vigo (~200 km)</div><div class="tl-sub">Portugese grens, Galicië binnenrijden</div></div></div><div class="tl-row"><div class="tl-time">14:00</div><div class="tl-body"><span class="pill pause">PAUZE 2 — 60 min</span><div class="tl-title">Vigo of Santiago de Compostela (~430 km)</div><div class="tl-sub">Middagmaal — Galicische keuken</div></div></div><div class="tl-row"><div class="tl-time">15:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Santiago → Burgos (~420 km)</div><div class="tl-sub">Via A-8 oostwaarts, door Asturië en Cantabrië</div></div></div><div class="tl-row"><div class="tl-time">18:00</div><div class="tl-body"><span class="pill pause">PAUZE 3 — 20 min</span><div class="tl-title">Burgos (~850 km)</div><div class="tl-sub">Koffie en rekken voor het laatste stuk</div></div></div><div class="tl-row"><div class="tl-time">18:20</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Burgos → Tours regio (~380 km)</div><div class="tl-sub">Via Vitoria, grens Hendaye/Irun, A10 richting Tours</div></div></div><div class="tl-row"><div class="tl-time">22:00</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Loire/Tours regio — nacht 1</div><div class="tl-sub">Laat inchecken — boek hotel met late check-in mogelijkheid</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~11u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~2u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.230 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header loire">Zo 20 september — Loire/Tours → Mechelen (thuis 14u)</div><div class="tl-row"><div class="tl-time">07:00</div><div class="tl-body"><span class="pill pause">ONTBIJT</span><div class="tl-title">Hotel Loire/Tours</div><div class="tl-sub">Vroeg ontbijten voor vertrek</div></div></div><div class="tl-row"><div class="tl-time">08:00</div><div class="tl-body"><span class="pill act">ACTIVITEIT — 2u</span><div class="tl-title">Parc de Beauval of Château de Chambord</div><div class="tl-sub">Parc de Beauval: dieren, ideaal voor Amani. Chambord: kasteel en park, gratis buiten.</div></div></div><div class="tl-row"><div class="tl-time">10:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Tours → Mechelen (~490 km)</div><div class="tl-sub">Via A10/A11 Parijs, ring A86/A104, dan A1 Brussel</div></div></div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Parijs omgeving (~200 km)</div><div class="tl-sub">Lunch of snack, Amani bewegen voor laatste stuk</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Parijs → Mechelen (~290 km)</div><div class="tl-sub">Via A1, grens bij Lille, E19 Brussel</div></div></div><div class="tl-row"><div class="tl-time">14:00</div><div class="tl-body"><span class="pill loire-c">THUIS ✓</span><div class="tl-title">Mechelen — thuis om 14u</div><div class="tl-sub">Totale rijdag: ~5u netto + activiteit + pauzes</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~2,5u</div><div class="sb-lbl">Pauze + activiteit</div></div><div class="sb-item"><div class="sb-val">~490 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="budget-section"><div class="section-title">💰 Budgetoverzicht</div><div class="budget-grid"><div class="bstat"><div class="bstat-val">€4.000</div><div class="bstat-lbl">Totaal budget</div></div><div class="bstat"><div class="bstat-val">€3.265</div><div class="bstat-lbl">Geraamd totaal</div></div><div class="bstat" style="border-color:var(--c-picos)"><div class="bstat-val" style="color:var(--c-picos)">€735</div><div class="bstat-lbl">Buffer (~18%)</div></div></div><table class="budget"><thead><tr><th>Post</th><th>Detail</th><th>Bedrag</th></tr></thead><tbody><tr><td>Peñas Arriba — Picos</td><td>1 nacht</td><td>€90</td></tr><tr><td>Alvor / Prainha Beach</td><td>9 nachten, ma 7 – di 15 sept</td><td>€1.250</td></tr><tr><td>Lissabon</td><td>2 nachten, wo 16 – do 17 sept</td><td>€250</td></tr><tr><td>Loire/Tours regio</td><td>2 nachten, vr 18 – za 19 sept</td><td>€180</td></tr><tr><td>Brandstof</td><td>~4.400 km, ~8L/100km</td><td>€380</td></tr><tr><td>Tol</td><td>FR + ES + PT heen + terug</td><td>€140</td></tr><tr><td>Eten &amp; drinken</td><td>€40/dag × 16 dagen</td><td>€640</td></tr><tr><td>Activiteiten</td><td>Kabelbaan, Algarve, Lissabon, Loire</td><td>€285</td></tr><tr><td>Verzekering &amp; vignetten</td><td>Groene kaart uitbreiding, PT-tol</td><td>€50</td></tr><tr class="total"><td colspan="2"><strong>Geraamd totaal</strong></td><td><strong>€3.265</strong></td></tr><tr class="buffer"><td colspan="2">Buffer (resterend van €4.000)</td><td>€735</td></tr></tbody></table></div>
+    </template>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: VOORBEREIDING                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-voorbereiding" class="page">
+  <div class="hero-vb">
+    <h1>✅ Voorbereiding reis</h1>
+    <p>Portugal Roadtrip 2026 &nbsp;|&nbsp; Mehdi · Mounia · Amani &nbsp;|&nbsp; 4/5 – 20 september</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="progress-text">0 van 0 afgevinkt</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <main>
+    <div class="filter-bar">
+    <span class="filter-label">Toon:</span>
+    <button class="filter-btn active" onclick="setFilter('all')">Alles</button>
+    <button class="filter-btn" onclick="setFilter('open')">⬜ Nog te doen</button>
+    <button class="filter-btn" onclick="setFilter('done')">✅ Afgevinkt</button>
+  </div>
+
+  <!-- 1. DOCUMENTEN -->
+  <div class="sectie" id="s1">
+    <div class="sectie-header" onclick="toggleSectie('s1')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">📄</span>
+        <span class="sectie-title">Documenten & administratie</span>
+        <span class="sectie-badge" id="badge-s1">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s1">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s1">
+      <div class="subsectie">
+        <div class="subsectie-title">Identiteit</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitskaart Mehdi <span class="check-sub">Geldig tot minstens dec 2026 — controleer vervaldatum</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitskaart Mounia <span class="check-sub">Geldig tot minstens dec 2026 — controleer vervaldatum</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitsdocument Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Kinderreispas of identiteitskaart — aanvragen bij gemeente indien niet beschikbaar</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Rijbewijs Mehdi <span class="tag tag-doc">Doc</span><span class="check-sub">Belgisch rijbewijs geldig in ES + PT</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Rijbewijs Mounia <span class="tag tag-doc">Doc</span><span class="check-sub">Belgisch rijbewijs geldig in ES + PT</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Voertuig</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Kentekenbewijs <span class="tag tag-auto">Auto</span><span class="check-sub">Inschrijvingsbewijs van het voertuig in de auto bewaren</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Groene kaart (verzekeringsattest) <span class="tag tag-auto">Auto</span><span class="check-sub">Activeer uitbreiding bij verzekeraar voor ES + PT</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Europese sticker op auto <span class="tag tag-auto">Auto</span><span class="check-sub">"B"-sticker verplicht buiten BE — controleer of aanwezig</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Verzekering & zorg</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Mehdi <span class="check-sub">Europese ziekteverzekeringskaart — aanvragen bij mutualiteit</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Mounia <span class="check-sub">Europese ziekteverzekeringskaart — aanvragen bij mutualiteit</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Aparte kaart op naam van Amani — aanvragen bij mutualiteit</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reisverzekering afsluiten <span class="check-sub">Medische dekking + repatriëring voor 3 personen — vergelijk via Touring of bankkaart voordelen</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Reserveringen</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Peñas Arriba printen of downloaden <span class="check-sub">+ vroeg inchecken bevestigen bij Scenario B (aankomst ~07:30)</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Alvor / Prainha verblijf <span class="check-sub">9 nachten, ma 7 – di 15 sept</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Lissabon hotel <span class="check-sub">2 nachten, wo 16 – do 17 sept — parking bevestigen</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Loire/Tours hotel <span class="check-sub">2 nachten, vr 18 – za 19 sept — late check-in bevestigen (aankomst ~22u)</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Fuente Dé kabelbaan reserveren <span class="check-sub">Openingstijden september controleren — evt. online ticket</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Parc de Beauval of Chambord reserveren <span class="check-sub">Keuze nog te maken — online tickets goedkoper</span></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s1">🎉 Alle documenten in orde!</div>
+    </div>
+  </div>
+
+  <!-- 2. AUTO -->
+  <div class="sectie" id="s2">
+    <div class="sectie-header" onclick="toggleSectie('s2')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🚗</span>
+        <span class="sectie-title">Auto & rijklaar maken</span>
+        <span class="sectie-badge" id="badge-s2">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s2">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s2">
+      <div class="subsectie">
+        <div class="subsectie-title">Technische controle</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bandenspanning controleren <span class="tag tag-auto">Auto</span><span class="check-sub">Inclusief reservewiel — correcte druk voor beladen auto (zie deurpost)</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Oliepeil controleren <span class="tag tag-auto">Auto</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koelvloeistof controleren <span class="tag tag-auto">Auto</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ruitenwisservloeistof bijvullen <span class="tag tag-auto">Auto</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ruitenwissers controleren <span class="tag tag-auto">Auto</span><span class="check-sub">Portugal heeft regen in september — zeker in het noorden</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Verlichting controleren (voor, achter, rem) <span class="tag tag-auto">Auto</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reservewiel aanwezig en opgepompt <span class="tag tag-auto">Auto</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Verplicht materiaal ES + PT</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Gevarendriehoek <span class="tag tag-auto">Auto</span><span class="check-sub">Verplicht in Spanje en Portugal — boete bij afwezigheid</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Veiligheidshesje (fluogeel) <span class="tag tag-auto">Auto</span><span class="check-sub">1 per inzittende verplicht in ES + PT — best 3 stuks</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autostoeltje Amani controleren <span class="tag tag-amani">Amani</span><span class="check-sub">Goed bevestigd, harnasriemen correct, geen vervaldatum overschreden</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Tol & navigatie</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ulys-badge meenemen <span class="check-sub">Werkt in FR, ES en PT — al geactiveerd ✓ Controleer saldo/abonnement voor vertrek</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Telefoonhouder in auto bevestigd <span class="tag tag-tech">Tech</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autolader met meerdere USB-poorten <span class="tag tag-tech">Tech</span><span class="check-sub">Minimum 2 poorten — telefoon + tablet Amani</span></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s2">🎉 Auto volledig rijklaar!</div>
+    </div>
+  </div>
+
+  <!-- 3. AMANI -->
+  <div class="sectie" id="s3">
+    <div class="sectie-header" onclick="toggleSectie('s3')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">👶</span>
+        <span class="sectie-title">Amani — specifieke voorbereiding</span>
+        <span class="sectie-badge" id="badge-s3">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s3">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s3">
+      <div class="subsectie">
+        <div class="subsectie-title">In de auto</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Favoriete knuffel(s) klaarleggen <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Tablet opladen + kindervideo's / audioboeken downloaden <span class="tag tag-amani">Amani</span><span class="check-sub">Offline — geen dataverbruik onderweg</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks voor de rit inpakken <span class="tag tag-amani">Amani</span><span class="check-sub">Rijstkoeken, rozijnen, fruitpakjes — geen kruimels</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Slaapzakje of deken voor nachtrit <span class="tag tag-amani">Amani</span><span class="check-sub">Scenario B — Amani rijdt in pyjama</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reispot of reisluiers voorzien <span class="tag tag-amani">Amani</span><span class="check-sub">Voldoende voor 16 dagen + reserve</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Vochtige doekjes (ruim voorzien) <span class="tag tag-amani">Amani</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Strand & buitenlucht</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnebrand SPF 50+ voor kinderen <span class="tag tag-amani">Amani</span><span class="check-sub">Aparte tube — niet mengen met volwassenen SPF</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zwembandjes of zwemvest <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnehoed / pet <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">UV-zwempakje <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Strandspeelgoed (emmer, schepje) <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Kleine rugzak voor daguitstappen <span class="tag tag-amani">Amani</span><span class="check-sub">Picos, Lissabon, Loire — handig voor snacks en speelgoed</span></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s3">🎉 Amani volledig klaar!</div>
+    </div>
+  </div>
+
+  <!-- 4. MEDISCH -->
+  <div class="sectie" id="s4">
+    <div class="sectie-header" onclick="toggleSectie('s4')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🏥</span>
+        <span class="sectie-title">Medische reistas</span>
+        <span class="sectie-badge" id="badge-s4">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s4">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s4">
+      <div class="subsectie">
+        <div class="subsectie-title">Koorts & pijn</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Paracetamol volwassenen (tablet) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Paracetamol kind (siroop of zetpil) <span class="tag tag-amani">Amani</span><span class="check-sub">Dosering afstemmen op gewicht Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ibuprofen volwassenen <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ibuprofen kind siroop <span class="tag tag-amani">Amani</span><span class="check-sub">Ook bij val of tandpijn — ontstekingsremmend</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Digitale thermometer <span class="tag tag-med">Med</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Maag & darmen</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Imodium (diarree volwassenen) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Smecta of Diosmectite (diarree kind) <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ercefuryl (reisdiarree / darmbacterie) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Microlax of Duphalac (verstopping) <span class="tag tag-amani">Amani</span><span class="check-sub">Amani kan last hebben van andere voeding onderweg</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">ORS / rehydratatiezakjes (Hydralyte) <span class="tag tag-med">Med</span><span class="check-sub">Bij uitdroging door diarree of hitte — voor alle 3</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Rennie of Gaviscon (maagzuur) <span class="tag tag-med">Med</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Misselijkheid & wagenziekte</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Domperidone / Motilium siroop <span class="tag tag-amani">Amani</span><span class="check-sub">Bij misselijkheid of braken</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Primperan of Vogalib (volwassenen) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Scopoderm pleister (reisziekte) <span class="tag tag-med">Med</span><span class="check-sub">Op voorschrift — bochtige wegen Picos en Douro</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Wonden & huid</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ontsmettingsmiddel (Betadine of Biseptine) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Pleisters (diverse groottes) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Steriele gaasjes + kleefband <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Biafine (verbrandingscrème) <span class="tag tag-med">Med</span><span class="check-sub">Bij zonnebrand of zandirritatie</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Fenistil gel (insectenbeten / jeuk) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Hydrocortisone crème 1% (allergische huidreactie) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Tweezer (splinter of tekenbeet) <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Medische schaar <span class="tag tag-med">Med</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Ogen, neus & allergie</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Neusspray zoutwater (Sterimar / Physiomer) <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Oogdruppels (Visine of Artelac) <span class="tag tag-med">Med</span><span class="check-sub">Droge ogen door zon, zand en airco</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Antihistaminica (Cetirizine of Loratadine) <span class="tag tag-med">Med</span><span class="check-sub">Hooikoorts of allergische reactie</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Zon & insecten</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnebrand SPF 50+ volwassenen <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">After Sun lotion <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">DEET insectenspray volwassenen <span class="tag tag-med">Med</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Nobite of Autan Kids (DEET-vrij) <span class="tag tag-amani">Amani</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Noodinfo</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Lijst bloedgroepen + allergieën alle 3 <span class="check-sub">Op papier in de reisapotheek bewaren</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Contactgegevens huisarts <span class="check-sub">Telefoonnummer + adres meenemen</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Mutualitieitsnummer alle 3 noteren <span class="check-sub">Nodig bij EHIC-gebruik in het buitenland</span></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s4">🎉 Medische reistas compleet!</div>
+    </div>
+  </div>
+
+  <!-- 5. ETEN ONDERWEG -->
+  <div class="sectie" id="s5">
+    <div class="sectie-header" onclick="toggleSectie('s5')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🍽️</span>
+        <span class="sectie-title">Eten & drinken onderweg</span>
+        <span class="sectie-badge" id="badge-s5">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s5">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s5">
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koelbox of koeltas voor in de auto <span class="check-sub">Voor dranken, fruit en snacks op rijdagen</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Herbruikbare waterflessen (3 stuks) <span class="check-sub">Vullen aan tankstations of supermarkten</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks rijdagen volwassenen <span class="check-sub">Noten, repen, fruit — voor nachtrit en lange etappes</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks rijdagen Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Rijstkoeken, rozijnen, fruitpuree zakjes — geen kruimels</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Picknickmateriaal (servetten, bestek, tas) <span class="check-sub">Voor aire-stops in Frankrijk en Spanje</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koffie thermos meenemen <span class="check-sub">Nachtrit Scenario B — warm houden voor bestuurder</span></div></div>
+      <div class="sectie-done-banner" id="done-s5">🎉 Eten & drinken voorzien!</div>
+    </div>
+  </div>
+
+  <!-- 6. GELD -->
+  <div class="sectie" id="s6">
+    <div class="sectie-header" onclick="toggleSectie('s6')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">💳</span>
+        <span class="sectie-title">Geld & betalingen</span>
+        <span class="sectie-badge" id="badge-s6">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s6">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s6">
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Contant geld voorzien — €200–300 <span class="check-sub">Voor markten, parkeermeters, kleine zaken, Picos-dorpjes</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bankkaarten controleren (geldigheid + buitenlandlimiet) <span class="check-sub">Instellen via app indien nodig — buitenlandtransacties activeren</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Revolut of Wise overwegen <span class="check-sub">Geen wisselkosten, gratis opnemen — handig in Portugal</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ulys saldo controleren voor vertrek <span class="check-sub">Voldoende tegoed voor heen + terug (~€140 tol)</span></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Budget-app of spreadsheet aanmaken <span class="check-sub">Uitgaven bijhouden per dag — binnen €4.000 blijven</span></div></div>
+      <div class="sectie-done-banner" id="done-s6">🎉 Financiën in orde!</div>
+    </div>
+  </div>
+
+  <!-- 7. TECH -->
+  <div class="sectie" id="s7">
+    <div class="sectie-header" onclick="toggleSectie('s7')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">📱</span>
+        <span class="sectie-title">Tech & navigatie</span>
+        <span class="sectie-badge" id="badge-s7">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s7">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s7">
+      <div class="subsectie">
+        <div class="subsectie-title">Navigatie</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Portugal <span class="tag tag-tech">Tech</span><span class="check-sub">Via app: Offline kaarten > Regio selecteren</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Spanje <span class="tag tag-tech">Tech</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Frankrijk <span class="tag tag-tech">Tech</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Waze installeren als backup navigatie <span class="tag tag-tech">Tech</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Laders & stroom</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autolader met meerdere USB-poorten <span class="tag tag-tech">Tech</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Telefoonhouder in auto <span class="tag tag-tech">Tech</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Powerbank (min. 10.000 mAh) <span class="tag tag-tech">Tech</span><span class="check-sub">Voor daguitstappen zonder stopcontact</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Stekkeradapter controleren <span class="check-sub">Portugal = Type F (zelfde als België ✓) — geen adapter nodig</span></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Overig</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Tablet Amani opladen + covers downloaden <span class="tag tag-amani">Amani</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Muziekplaylist rijdagen aanmaken <span class="check-sub">Spotify offline — ook voor nachtrit</span></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reisfoto's cloud backup instellen <span class="check-sub">Google Foto's of OneDrive automatisch uploaden via wifi</span></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s7">🎉 Tech volledig klaar!</div>
+    </div>
+  </div>
+  </main>
+</div>
+
+<script>
+  // ── PAGE NAVIGATION ──────────────────────────────────────────
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    const page = document.getElementById('page-' + id);
+    if (page) {
+      page.classList.add('active');
+      const navEl = document.getElementById('nav-' + id);
+      if (navEl) navEl.classList.add('active');
+    }
+    window.scrollTo(0,0);
+  }
+
+  // ── REISSCHEMA: SCENARIO TOGGLE ──────────────────────────────
+  const tpl = document.getElementById('shared-days').content;
+  document.getElementById('shared-a').appendChild(tpl.cloneNode(true));
+  document.getElementById('shared-b').appendChild(tpl.cloneNode(true));
+
+  function setScenario(id) {
+    document.querySelectorAll('.scenario').forEach(s => s.classList.remove('visible'));
+    document.getElementById('scenario-' + id).classList.add('visible');
+    document.querySelectorAll('.toggle-btn').forEach((b,i) => {
+      b.classList.toggle('active', (id==='a' && i===0)||(id==='b' && i===1));
+    });
+  }
+
+  // ── VOORBEREIDING ────────────────────────────────────────────
+  const STORAGE_KEY = 'portugal2026-voorbereiding';
+
+  function saveState() {
+    const state = {};
+    document.querySelectorAll('.check-item').forEach((el,i) => { state[i] = el.classList.contains('done'); });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function loadState() {
+    try {
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      document.querySelectorAll('.check-item').forEach((el,i) => { if (state[i]) el.classList.add('done'); });
+    } catch(e) {}
+  }
+
+  function toggle(el) { el.classList.toggle('done'); saveState(); updateAll(); }
+
+  function toggleSectie(id) {
+    const body = document.getElementById('body-' + id);
+    const chev = document.getElementById('chev-' + id);
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+
+  function updateAll() {
+    const all  = document.querySelectorAll('.check-item');
+    const done = document.querySelectorAll('.check-item.done');
+    const pct  = all.length ? Math.round(done.length / all.length * 100) : 0;
+    document.getElementById('progress-text').textContent = done.length + ' van ' + all.length + ' afgevinkt';
+    document.getElementById('progress-pct').textContent  = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    ['s1','s2','s3','s4','s5','s6','s7'].forEach(id => {
+      const body = document.getElementById('body-' + id);
+      if (!body) return;
+      const items   = body.querySelectorAll('.check-item');
+      const checked = body.querySelectorAll('.check-item.done');
+      const badge   = document.getElementById('badge-' + id);
+      if (badge) badge.textContent = checked.length + ' / ' + items.length;
+      const banner  = document.getElementById('done-' + id);
+      if (banner) banner.style.display = (checked.length === items.length && items.length > 0) ? 'block' : 'none';
+    });
+    applyCurrentFilter();
+  }
+
+  let currentFilter = 'all';
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach((b,i) => {
+      b.classList.toggle('active', ['all','open','done'][i] === f);
+    });
+    applyCurrentFilter();
+  }
+
+  function applyCurrentFilter() {
+    document.querySelectorAll('.check-item').forEach(el => {
+      if (currentFilter === 'all')  { el.style.display = ''; return; }
+      el.style.display = (currentFilter === 'done') === el.classList.contains('done') ? '' : 'none';
+    });
+  }
+
+  loadState();
+  updateAll();
+</script>
+
+</body>
+</html>
