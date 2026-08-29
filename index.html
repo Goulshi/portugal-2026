@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portugal Roadtrip 2026</title>
+<style>
+  :root {
+    --c-drive:  #854F0B; --bg-drive:  #FAEEDA;
+    --c-picos:  #0F6E56; --bg-picos:  #E1F5EE;
+    --c-alvor:  #534AB7; --bg-alvor:  #EEEDFE;
+    --c-lis:    #993556; --bg-lis:    #FBEAF0;
+    --c-loire:  #3B6D11; --bg-loire:  #EAF3DE;
+    --c-pause:  #1D9E75; --c-act:    #D85A30;
+    --c-sleep:  #534AB7; --c-text:   #1A1A1A;
+    --c-sub:    #666660; --c-border: #E0DED8;
+    --c-bg:     #F7F7F5; --c-white:  #ffffff;
+    --c-header: #1A1A2E; --c-green:  #1D9E75;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--c-bg); color: var(--c-text); font-size: 14px; }
+
+  /* ── NAV ── */
+  nav { background: var(--c-header); padding: 0 24px; display: flex; align-items: center; gap: 4px; overflow-x: auto; }
+  nav a { color: #AAA; text-decoration: none; padding: 14px 16px; font-size: 13px; white-space: nowrap; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; cursor: pointer; }
+  nav a:hover { color: #fff; }
+  nav a.active { color: #fff; border-bottom-color: #fff; }
+
+  /* ── HERO ── */
+  .hero { background: var(--c-header); color: #fff; padding: 36px 24px 28px; }
+  .hero h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .hero p  { color: #AAA; margin-top: 6px; font-size: 13px; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 24px; }
+  .stat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 700; }
+  .stat-lbl { font-size: 11px; color: #AAA; margin-top: 2px; }
+
+  /* Voorbereiding hero variant */
+  .hero-vb { background: var(--c-header); color: #fff; padding: 28px 24px 22px; }
+  .hero-vb h1 { font-size: 22px; font-weight: 700; }
+  .hero-vb p  { color: #AAA; margin-top: 5px; font-size: 13px; }
+  .progress-bar-wrap { margin-top: 16px; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: #AAA; margin-bottom: 6px; }
+  .progress-track { background: rgba(255,255,255,.12); border-radius: 6px; height: 8px; overflow: hidden; }
+  .progress-fill  { background: var(--c-green); height: 100%; border-radius: 6px; transition: width .4s ease; }
+
+  /* ── PAGE SWITCHER ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── MAIN ── */
+  main { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+
+  /* ── REISSCHEMA: TOGGLE ── */
+  .toggle-bar { display: flex; gap: 8px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+  .toggle-label { font-size: 12px; font-weight: 600; color: var(--c-sub); margin-right: 4px; }
+  .toggle-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--c-border); background: var(--c-white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--c-sub); transition: all .2s; }
+  .toggle-btn.active { background: var(--c-header); color: #fff; border-color: var(--c-header); }
+  .toggle-btn:hover:not(.active) { border-color: #888; color: var(--c-text); }
+  .scenario { display: none; }
+  .scenario.visible { display: block; }
+
+  /* ── DAG BLOK ── */
+  .dag { margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid var(--c-border); }
+  .dag-header { padding: 12px 16px; color: #fff; font-weight: 600; font-size: 13px; }
+  .dag-header.drive { background: var(--c-drive); }
+  .dag-header.picos { background: var(--c-picos); }
+  .dag-header.alvor { background: var(--c-alvor); }
+  .dag-header.lis   { background: var(--c-lis);   }
+  .dag-header.loire { background: var(--c-loire); }
+  .dag-header.night { background: #2D2D4E; }
+
+  /* ── TIMELINE ── */
+  .tl-row { display: grid; grid-template-columns: 56px 1fr; background: var(--c-white); border-top: 1px solid var(--c-border); }
+  .tl-time { font-size: 11px; font-weight: 600; color: var(--c-sub); text-align: right; padding: 12px 10px 12px 8px; display: flex; align-items: center; justify-content: flex-end; }
+  .tl-body { padding: 10px 14px; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; color: #fff; letter-spacing: .3px; }
+  .pill.drive   { background: var(--c-drive); }
+  .pill.pause   { background: var(--c-pause); }
+  .pill.act     { background: var(--c-act);   }
+  .pill.sleep   { background: var(--c-sleep); }
+  .pill.night   { background: #2D2D4E; }
+  .pill.dag-c   { background: var(--c-alvor); }
+  .pill.lis-c   { background: var(--c-lis);   }
+  .pill.loire-c { background: var(--c-loire); }
+  .tl-title { font-size: 13px; font-weight: 600; color: var(--c-text); margin-bottom: 2px; }
+  .tl-sub   { font-size: 12px; color: var(--c-sub); }
+
+  /* ── STAT BAR ── */
+  .stat-bar { display: grid; grid-template-columns: repeat(3,1fr); background: var(--c-bg); border-top: 1px solid var(--c-border); }
+  .sb-item  { text-align: center; padding: 10px 8px; border-right: 1px solid var(--c-border); }
+  .sb-item:last-child { border-right: none; }
+  .sb-val { font-size: 15px; font-weight: 700; color: var(--c-text); }
+  .sb-lbl { font-size: 10px; color: var(--c-sub); margin-top: 1px; }
+
+  /* ── NOTE ── */
+  .note { background: #FFFBEA; border: 1px solid #D4A017; border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-size: 12px; color: #7A5C00; }
+  .note strong { font-weight: 700; }
+
+  /* ── ROUTE BAR ── */
+  .route-bar { display: flex; align-items: center; gap: 0; margin: 0 0 20px; flex-wrap: wrap; }
+  .route-stop { background: var(--c-white); border: 1px solid var(--c-border); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
+  .route-arrow { color: var(--c-sub); padding: 0 6px; font-size: 14px; }
+
+  /* ── BUDGET ── */
+  .budget-section { margin-top: 32px; }
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .budget-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+  .bstat { background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px; text-align: center; }
+  .bstat-val { font-size: 20px; font-weight: 700; }
+  .bstat-lbl { font-size: 11px; color: var(--c-sub); margin-top: 2px; }
+  table.budget { width: 100%; border-collapse: collapse; background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; overflow: hidden; }
+  table.budget th { background: var(--c-bg); font-size: 11px; font-weight: 600; color: var(--c-sub); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--c-border); }
+  table.budget th:last-child { text-align: right; }
+  table.budget td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid var(--c-border); }
+  table.budget td:last-child { text-align: right; font-weight: 600; }
+  table.budget tr:last-child td { border-bottom: none; }
+  table.budget tr.total  td { background: #EEEDFE; font-weight: 700; }
+  table.budget tr.buffer td { color: var(--c-picos); font-weight: 600; }
+
+  /* ── VOORBEREIDING STYLES ── */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; font-weight: 600; color: var(--c-sub); }
+  .filter-btn { padding: 6px 14px; border-radius: 16px; border: 1.5px solid var(--c-border); background: var(--c-white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--c-sub); transition: all .15s; }
+  .filter-btn:hover { border-color: #888; color: var(--c-text); }
+  .filter-btn.active { background: var(--c-header); color: #fff; border-color: var(--c-header); }
+  .sectie { margin-bottom: 16px; border-radius: 10px; border: 1px solid var(--c-border); overflow: hidden; }
+  .sectie-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; user-select: none; background: var(--c-white); transition: background .15s; }
+  .sectie-header:hover { background: #F0EEE8; }
+  .sectie-header-left { display: flex; align-items: center; gap: 10px; }
+  .sectie-icon { font-size: 18px; width: 28px; text-align: center; }
+  .sectie-title { font-size: 14px; font-weight: 700; color: var(--c-text); }
+  .sectie-badge { font-size: 11px; color: var(--c-sub); background: var(--c-bg); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--c-border); }
+  .sectie-chevron { font-size: 12px; color: var(--c-sub); transition: transform .2s; }
+  .sectie-chevron.open { transform: rotate(180deg); }
+  .sectie-body { display: none; border-top: 1px solid var(--c-border); }
+  .sectie-body.open { display: block; }
+  .subsectie { border-bottom: 1px solid var(--c-border); }
+  .subsectie:last-child { border-bottom: none; }
+  .subsectie-title { font-size: 11px; font-weight: 700; color: var(--c-sub); text-transform: uppercase; letter-spacing: .6px; padding: 10px 16px 4px; background: var(--c-bg); }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 9px 16px; background: var(--c-white); border-top: 1px solid var(--c-border); cursor: pointer; transition: background .1s; }
+  .check-item:first-of-type { border-top: none; }
+  .check-item:hover { background: #FAFAF8; }
+  .check-item.done .check-label { text-decoration: line-through; color: var(--c-sub); }
+  .check-box { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--c-border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; background: var(--c-white); }
+  .check-item.done .check-box { background: var(--c-green); border-color: var(--c-green); }
+  .check-tick { color: #fff; font-size: 11px; display: none; }
+  .check-item.done .check-tick { display: block; }
+  .check-label { font-size: 13px; color: var(--c-text); line-height: 1.4; flex: 1; }
+  .check-sub { font-size: 11px; color: var(--c-sub); margin-top: 2px; display: block; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 6px; margin-left: 6px; vertical-align: middle; }
+  .tag-amani { background: #FBEAF0; color: var(--c-lis); }
+  .tag-auto  { background: #FAEEDA; color: var(--c-drive); }
+  .tag-doc   { background: #E6F1FB; color: #0C447C; }
+  .tag-med   { background: #E1F5EE; color: var(--c-picos); }
+  .tag-tech  { background: #EEEDFE; color: var(--c-alvor); }
+  .sectie-done-banner { display: none; background: #E1F5EE; color: #085041; font-size: 12px; font-weight: 600; padding: 8px 16px; text-align: center; border-top: 1px solid #1D9E75; }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(3,1fr); }
+    .budget-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    @page { size: A4 portrait; margin: 12mm 14mm 14mm 14mm; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; font-size: 9px; }
+    nav { display: none !important; }
+    .toggle-bar { display: none !important; }
+    .filter-bar { display: none !important; }
+    .scenario { display: block !important; }
+    .scenario:not(.visible) { display: none !important; }
+    .page { display: block !important; }
+    .hero,.hero-vb { background: #1A1A2E !important; color: #fff !important; padding: 10px 14px 8px; margin-bottom: 6px; }
+    .hero h1,.hero-vb h1 { font-size: 14px; }
+    .hero p,.hero-vb p { font-size: 8px; margin-top: 3px; }
+    .stats { gap: 5px; margin-top: 8px; }
+    .stat { padding: 5px 4px; border-radius: 4px; }
+    .stat-val { font-size: 11px; } .stat-lbl { font-size: 7px; }
+    .progress-bar-wrap { display: none; }
+    main { padding: 0; max-width: 100%; }
+    .route-bar { margin: 5px 0 6px; }
+    .route-stop { padding: 3px 7px; font-size: 8px; border-radius: 4px; }
+    .route-arrow { font-size: 9px; padding: 0 3px; }
+    .dag { margin-bottom: 5px; border-radius: 5px; break-inside: avoid; page-break-inside: avoid; }
+    .dag-header { padding: 5px 10px; font-size: 9px; }
+    .tl-row { grid-template-columns: 40px 1fr; }
+    .tl-time { font-size: 8px; padding: 4px 6px 4px 4px; }
+    .tl-body { padding: 4px 10px; }
+    .pill { font-size: 7px; padding: 1px 5px; margin-bottom: 2px; border-radius: 6px; }
+    .tl-title { font-size: 8.5px; margin-bottom: 1px; } .tl-sub { font-size: 7.5px; }
+    .stat-bar { border-top: 1px solid #D0CEC8; }
+    .sb-item { padding: 4px 6px; } .sb-val { font-size: 9px; } .sb-lbl { font-size: 7px; }
+    .note { padding: 5px 10px; font-size: 7.5px; margin-bottom: 6px; }
+    .budget-section { margin-top: 8px; } .section-title { font-size: 10px; margin-bottom: 5px; }
+    .budget-grid { gap: 5px; margin-bottom: 6px; }
+    .bstat { padding: 6px; border-radius: 4px; } .bstat-val { font-size: 11px; } .bstat-lbl { font-size: 7px; }
+    table.budget { break-inside: avoid; page-break-inside: avoid; }
+    table.budget th { font-size: 7.5px; padding: 4px 8px; }
+    table.budget td { font-size: 8px; padding: 3px 8px; }
+    .sectie { margin-bottom: 5px; break-inside: avoid; }
+    .sectie-body { display: block !important; }
+    .sectie-chevron { display: none; }
+    .sectie-header { padding: 6px 12px; }
+    .sectie-title { font-size: 10px; }
+    .subsectie-title { font-size: 8px; padding: 5px 12px 2px; }
+    .check-item { padding: 4px 12px; }
+    .check-label { font-size: 8px; } .check-sub { font-size: 7px; }
+    .check-box { width: 12px; height: 12px; border-radius: 2px; }
+    .check-tick { font-size: 8px; }
+    .tag { font-size: 7px; padding: 1px 4px; }
+  }
+
+  /* ── NOTA ── */
+  .nota-wrap { margin-top: 5px; display: none; }
+  .check-item.done .nota-wrap { display: block; }
+  .check-item:hover .nota-wrap { display: block; }
+  .nota-input { width: 100%; font-size: 11px; color: var(--c-sub); border: 1px solid var(--c-border); border-radius: 4px; padding: 4px 8px; background: var(--c-bg); font-family: inherit; resize: none; outline: none; }
+  .nota-input:focus { border-color: var(--c-picos); background: #fff; }
+  .nota-input::placeholder { color: #BBBBBB; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a onclick="showPage('reisschema')" id="nav-reisschema" class="active">📋 Reisschema</a>
+  <a onclick="showPage('voorbereiding')" id="nav-voorbereiding">✅ Voorbereiding</a>
+  <a onclick="showPage('alvor')" id="nav-alvor">🏖️ Alvor</a>
+  <a onclick="showPage('lissabon')" id="nav-lissabon">🏙️ Lissabon</a>
+  
+  <a onclick="showPage('budget')" id="nav-budget">💰 Budget</a>
+  
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: REISSCHEMA                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-reisschema" class="page active">
+
+  <div class="hero">
+    <h1>🇵🇹 Portugal Roadtrip 2026</h1>
+    <p>Mehdi · Mounia · Amani &nbsp;|&nbsp; Heffen → Picos → Alvor → Lissabon → Poitiers → Heffen</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">15</div><div class="stat-lbl">Nachten weg</div></div>
+      <div class="stat"><div class="stat-val">~4.400 km</div><div class="stat-lbl">Totale afstand</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-lbl">Verlofdagen</div></div>
+
+    </div>
+  </div>
+
+  <main>
+    <div class="toggle-bar">
+      <span class="toggle-label">Vertrekoptie:</span>
+      <button class="toggle-btn active" onclick="setScenario('b')">🅑 &nbsp;Vr 4 sept — 20:00 (nachtrit)</button>
+      <button class="toggle-btn" onclick="setScenario('a')">🅐 &nbsp;Za 5 sept — 06:30</button>
+    </div>
+    <div id="scenario-a" class="scenario">
+      <div class="route-bar">
+        <div class="route-stop">🏠 Heffen</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-picos);color:var(--c-picos)">🏔️ Picos</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-alvor);color:var(--c-alvor)">🏖️ Alvor</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-lis);color:var(--c-lis)">🏙️ Lissabon</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-loire);color:var(--c-loire)">🏛️ Poitiers</div><div class="route-arrow">→</div>
+        <div class="route-stop">🏠 Heffen</div>
+      </div>
+      <div class="dag"><div class="dag-header drive">Zaterdag 5 september — Mechelen → Peñas Arriba (Picos de Europa)</div><div class="tl-row"><div class="tl-time">06:30</div><div class="tl-body"><span class="pill drive">VERTREK</span><div class="tl-title">Mechelen</div><div class="tl-sub">Auto volledig geladen, Amani gevoed voor vertrek</div></div></div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill pause">PAUZE 1 — 30 min</span><div class="tl-title">Reims (~230 km)</div><div class="tl-sub">Ontbijt, koffie, Amani laten bewegen</div></div></div><div class="tl-row"><div class="tl-time">09:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Reims → Brive-la-Gaillarde (~400 km)</div><div class="tl-sub">Via A6/A71, door Bourgogne</div></div></div><div class="tl-row"><div class="tl-time">13:15</div><div class="tl-body"><span class="pill pause">PAUZE 2 — 60 min</span><div class="tl-title">Brive-la-Gaillarde (~630 km)</div><div class="tl-sub">Middagmaal, luiers, bewegen — picknick of supermarkt</div></div></div><div class="tl-row"><div class="tl-time">14:15</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Brive → San Sebastián (~380 km)</div><div class="tl-sub">Via Bordeaux, grensovergang Hendaye</div></div></div><div class="tl-row"><div class="tl-time">17:00</div><div class="tl-body"><span class="pill pause">PAUZE 3 — 20 min</span><div class="tl-title">San Sebastián (~900 km)</div><div class="tl-sub">Tanken in Spanje (goedkoper), koffie, frisse lucht</div></div></div><div class="tl-row"><div class="tl-time">17:20</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">San Sebastián → Potes (~150 km)</div><div class="tl-sub">Via A-8, laatste 40 km bochtig — rustig aan</div></div></div><div class="tl-row"><div class="tl-time">20:00</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Peñas Arriba, Lon (Potes)</div><div class="tl-sub">Inchecken, avondeten in het restaurant ter plaatse</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~10,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~1,5u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.080 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header picos">Zondag 6 september — Fuente Dé (Picos) → Alvor</div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill act">ACTIVITEIT — 2u</span><div class="tl-title">Fuente Dé kabelbaan</div><div class="tl-sub">30 min rijden vanuit Potes. Amani gratis, spectaculair uitzicht</div></div></div><div class="tl-row"><div class="tl-time">11:30</div><div class="tl-body"><span class="pill pause">LUNCH — 60 min</span><div class="tl-title">Potes of Lon</div><div class="tl-sub">Lokale cocido of fabada — laatste rustig eten voor het rijblok</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Potes → Porto omgeving (~280 km)</div><div class="tl-sub">Via A-8 westwaarts langs Cantabrische kust richting Galicië</div></div></div><div class="tl-row"><div class="tl-time">15:30</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Porto omgeving (~430 km)</div><div class="tl-sub">Koffie, Amani stretchen — tanken voor Portugese grens</div></div></div><div class="tl-row"><div class="tl-time">16:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Porto → Alvor (~280 km)</div><div class="tl-sub">Via A1/A2 richting Lissabon, dan A2 verder naar Algarve</div></div></div><div class="tl-row"><div class="tl-time">19:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Alvor — Prainha Beach</div><div class="tl-sub">Inchecken, eerste diner in Alvor</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~5,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~3,5u</div><div class="sb-lbl">Pauzes + activiteit</div></div><div class="sb-item"><div class="sb-val">~560 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div id="shared-a"></div>
+    </div>
+    <div id="scenario-b" class="scenario visible">
+      <div class="route-bar">
+        <div class="route-stop">🏠 Heffen</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:#2D2D4E;color:#2D2D4E">🌙 Nachtrit</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-picos);color:var(--c-picos)">🏔️ Picos</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-alvor);color:var(--c-alvor)">🏖️ Alvor</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-lis);color:var(--c-lis)">🏙️ Lissabon</div><div class="route-arrow">→</div>
+        <div class="route-stop" style="border-color:var(--c-loire);color:var(--c-loire)">🏛️ Poitiers</div><div class="route-arrow">→</div>
+        <div class="route-stop">🏠 Heffen</div>
+      </div>
+      <div class="note"><strong>💡 Scenario B — Nachtrit:</strong> Amani rijdt in pyjama en slaapt de nacht grotendeels door. Bevestig vooraf bij Peñas Arriba dat je vroeg kunt inchecken (~07:30u). Wissel bestuurder af onderweg.</div>
+      <div class="dag"><div class="dag-header night">Vrijdag 4 september (avond) — Vertrek Mechelen (nachtrit)</div><div class="tl-row"><div class="tl-time">20:00</div><div class="tl-body"><span class="pill night">VERTREK</span><div class="tl-title">Mechelen</div><div class="tl-sub">Amani in pyjama in autostoeltje — auto op voorhand ingepakt</div></div></div><div class="tl-row"><div class="tl-time">23:00</div><div class="tl-body"><span class="pill pause">PAUZE — 15 min</span><div class="tl-title">Reims (~230 km)</div><div class="tl-sub">Tanken, koffie voor bestuurder — Amani slaapt door</div></div></div><div class="tl-row"><div class="tl-time">Za 02:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Brive-la-Gaillarde (~630 km)</div><div class="tl-sub">Wisseling bestuurder, korte rust, frisse lucht</div></div></div><div class="tl-row"><div class="tl-time">05:00</div><div class="tl-body"><span class="pill pause">PAUZE — 15 min</span><div class="tl-title">San Sebastián (~900 km)</div><div class="tl-sub">Tanken in Spanje (goedkoper), koffie</div></div></div><div class="tl-row"><div class="tl-time">07:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Peñas Arriba, Lon (Potes)</div><div class="tl-sub">Vroeg inchecken (bevestig vooraf) — ontbijt ter plaatse</div></div></div><div class="tl-row"><div class="tl-time">08:00</div><div class="tl-body"><span class="pill pause">RUST</span><div class="tl-title">Slaap/rust in hotel — 3 à 4u</div><div class="tl-sub">Iedereen bijslapen voor de daguitstap</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~10u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~1u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.080 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      </div>
+      <div class="dag"><div class="dag-header picos">Zaterdag 5 september (namiddag) — Picos rust + Fuente Dé</div><div class="tl-row"><div class="tl-time">Za 12:00</div><div class="tl-body"><span class="pill act">ACTIVITEIT — 2u</span><div class="tl-title">Fuente Dé kabelbaan</div><div class="tl-sub">Na rust: 30 min rijden vanuit Potes. Amani gratis, spectaculair uitzicht</div></div></div><div class="tl-row"><div class="tl-time">14:30</div><div class="tl-body"><span class="pill pause">LUNCH — 60 min</span><div class="tl-title">Potes of Lon</div><div class="tl-sub">Lokale cocido of fabada — avondeten ook in Peñas Arriba</div></div></div><div class="tl-row"><div class="tl-time">Zo 09:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Potes → Porto omgeving (~280 km)</div><div class="tl-sub">Via A-8 westwaarts langs Cantabrische kust</div></div></div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Porto omgeving (~430 km)</div><div class="tl-sub">Koffie, Amani stretchen — tanken voor Portugese grens</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Porto → Alvor (~280 km)</div><div class="tl-sub">Via A1/A2 richting Lissabon, dan A2 verder naar Algarve</div></div></div><div class="tl-row"><div class="tl-time">16:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Alvor — Prainha Beach</div><div class="tl-sub">Inchecken, eerste diner in Alvor — 3u vroeger dan Optie A ✓</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~5,5u</div><div class="sb-lbl">Netto rijden (zo)</div></div><div class="sb-item"><div class="sb-val">~1u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~560 km</div><div class="sb-lbl">Afstand (zo)</div></div></div></div>
+      <div id="shared-b"></div>
+    </div>
+    <template id="shared-days">
+      <div class="dag"><div class="dag-header alvor">Woensdag 16 september — Alvor uitchecken → Lissabon</div><div class="tl-row"><div class="tl-time">12:00</div><div class="tl-body"><span class="pill dag-c">CHECKOUT</span><div class="tl-title">Alvor middag</div><div class="tl-sub">Bagage inladen, laatste zwempje of lunch in Alvor</div></div></div><div class="tl-row"><div class="tl-time">13:00</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Alvor → Lissabon (~280 km)</div><div class="tl-sub">Via A2 noordwaarts, vlak en snel</div></div></div><div class="tl-row"><div class="tl-time">15:30</div><div class="tl-body"><span class="pill pause">PAUZE — 20 min</span><div class="tl-title">Setúbal / Palmela regio</div><div class="tl-sub">Koffie, Amani even uitlaten voor stadsaankomst</div></div></div><div class="tl-row"><div class="tl-time">15:50</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Laatste stuk naar Lissabon centrum</div><div class="tl-sub">Stadsverkeer — inchecken parking hotel</div></div></div><div class="tl-row"><div class="tl-time">16:30</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Lissabon — nacht 1</div><div class="tl-sub">Inchecken, vooravond in Alfama of Bairro Alto</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~2,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~20 min</div><div class="sb-lbl">Pauze</div></div><div class="sb-item"><div class="sb-val">~280 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header lis">Vrijdag 18 september — Lissabon → Poitiers</div><div class="tl-row"><div class="tl-time">09:00</div><div class="tl-body"><span class="pill lis-c">VERTREK</span><div class="tl-title">Lissabon na ontbijt</div><div class="tl-sub">Via A1 noord richting Badajoz — hotel Poitiers nog te boeken (parking aanwezig)</div></div></div><div class="tl-row"><div class="tl-time">10:30</div><div class="tl-body"><span class="pill pause">PAUZE 1 — 20 min</span><div class="tl-title">Badajoz grens (~240 km)</div><div class="tl-sub">Tanken in Portugal voor grens — goedkoper dan Spanje</div></div></div><div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill pause">PAUZE 2 — 45 min</span><div class="tl-title">Salamanca (~460 km)</div><div class="tl-sub">Middagmaal — Amani bewegen</div></div></div><div class="tl-row"><div class="tl-time">16:30</div><div class="tl-body"><span class="pill pause">PAUZE 3 — 20 min</span><div class="tl-title">Vitoria-Gasteiz (~780 km)</div><div class="tl-sub">Koffie en rekken — laatste Spaanse stop</div></div></div><div class="tl-row"><div class="tl-time">16:50</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Vitoria → Bayonne → Poitiers (~480 km)</div><div class="tl-sub">Via A-8, grens Irun/Hendaye, A10 richting Poitiers</div></div></div><div class="tl-row"><div class="tl-time">20:00</div><div class="tl-body"><span class="pill sleep">AANKOMST</span><div class="tl-title">Poitiers — hotel met parking</div><div class="tl-sub">Hotel nog te boeken — late check-in bevestigen (aankomst ~20u)</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~10u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~1,5u</div><div class="sb-lbl">Pauzes</div></div><div class="sb-item"><div class="sb-val">~1.260 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+      <div class="dag"><div class="dag-header loire">Zaterdag 19 september — Daguitstap Poitiers centrum</div>
+<div class="tl-row"><div class="tl-time">09:30</div><div class="tl-body"><span class="pill pause">ONTBIJT</span><div class="tl-title">Hotel Poitiers — rustig</div><div class="tl-sub">Geen haast — Amani uitgerust laten worden</div></div></div>
+<div class="tl-row"><div class="tl-time">10:30</div><div class="tl-body"><span class="pill act">OPTIE A</span><div class="tl-title"><a href="https://maps.google.com/?q=Palais+des+Comtes+de+Poitou+Poitiers" target="_blank" style="color:inherit">Palais des Comtes de Poitou-Ducs d'Aquitaine</a></div><div class="tl-sub">Middeleeuwse palts van Aliénor d'Aquitaine — indrukwekkende gotische zaal, gratis toegang</div></div></div>
+<div class="tl-row"><div class="tl-time">11:30</div><div class="tl-body"><span class="pill act">WANDELING</span><div class="tl-title"><a href="https://maps.google.com/?q=Notre-Dame-la-Grande+Poitiers" target="_blank" style="color:inherit">Notre-Dame-la-Grande</a></div><div class="tl-sub">Romaanse kerk 11e eeuw — gekleurde gevel, ideaal voor foto's. Amani in buggy op vlakke stoepen.</div></div></div>
+<div class="tl-row"><div class="tl-time">12:30</div><div class="tl-body"><span class="pill pause">PICKNICK</span><div class="tl-title"><a href="https://maps.google.com/?q=Parc+de+Blossac+Poitiers" target="_blank" style="color:inherit">Parc de Blossac</a></div><div class="tl-sub">Historisch park met panorama over vallei — speelzone voor kinderen, perfect voor picknick</div></div></div>
+<div class="tl-row"><div class="tl-time">15:00</div><div class="tl-body"><span class="pill act">WANDELING</span><div class="tl-title">Poitiers historisch centrum — steegjes</div><div class="tl-sub">Rue de la Chaîne, Place Charles de Gaulle — terrasjes, middeleeuwse gevels</div></div></div>
+<div class="tl-row"><div class="tl-time">19:00</div><div class="tl-body"><span class="pill sleep">AVONDETEN</span><div class="tl-title"><a href="https://maps.google.com/?q=L+Istanbul+Poitiers+12+Place+Charles+de+Gaulle" target="_blank" style="color:inherit">L'Istanbul — 12 Place Charles de Gaulle</a></div><div class="tl-sub">Turks halal restaurant ★5 — sandwich, kebab, gezinsvriendelijk. Vroeg eten voor Amani.</div></div></div>
+<div class="tl-row"><div class="tl-time">21:00</div><div class="tl-body"><span class="pill sleep">TERUG HOTEL</span><div class="tl-title">Vroeg slapen — morgen vroeg vertrek</div></div></div>
+<div class="stat-bar"><div class="sb-item"><div class="sb-val">Za 19/9</div><div class="sb-lbl">Poitiers dag</div></div><div class="sb-item"><div class="sb-val">Vrij</div><div class="sb-lbl">Geen rijdag</div></div><div class="sb-item"><div class="sb-val">Optie B ↓</div><div class="sb-lbl">Zie knop</div></div></div>
+<div style="padding:8px 12px;">
+<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.includes('Toon')?'▲ Verberg Optie B':'▼ Toon Optie B'" style="font-size:11px;color:var(--c-sub);background:var(--c-bg);border:0.5px solid var(--c-border);border-radius:8px;padding:5px 11px;cursor:pointer;">▼ Toon Optie B</button>
+<div style="display:none;margin-top:8px;padding:10px 12px;background:var(--c-white);border:0.5px solid var(--c-picos);border-radius:8px;">
+<div style="font-size:11px;font-weight:600;color:var(--c-picos);margin-bottom:6px;">🅑 Alternatief — Futuroscope daguitstap</div>
+<div style="font-size:12px;color:var(--c-text);line-height:1.5;margin-bottom:4px;"><a href="https://www.futuroscope.com" target="_blank" style="color:var(--c-alvor)">Futuroscope</a> — themapark net buiten Poitiers (15 min rijden). 3D/4D films, robotica, ruimtevaart. Speciaal kinder-verdieping voor Amani. Open 10:00–19:00. Tickets online ~€37/pp.</div>
+<div style="font-size:11px;color:var(--c-sub);">Route: <a href="https://maps.google.com/?q=Futuroscope+Chasseneuil-du-Poitou" target="_blank" style="color:inherit">Av. du Futuroscope, Chasseneuil-du-Poitou</a> · 15 min van Poitiers · Avondeten in hotelrestaurant</div>
+</div>
+</div>
+</div>
+<div class="dag"><div class="dag-header loire">Zondag 20 september — Poitiers → Mechelen (thuis 14u)</div><div class="tl-row"><div class="tl-time">07:00</div><div class="tl-body"><span class="pill pause">ONTBIJT</span><div class="tl-title">Hotel Poitiers — vroeg</div><div class="tl-sub">Vroeg ontbijten voor het lange stuk</div></div></div><div class="tl-row"><div class="tl-time">07:30</div><div class="tl-body"><span class="pill drive">VERTREK</span><div class="tl-title">Poitiers → Parijs (~340 km)</div><div class="tl-sub">Via A10 noordwaarts — geen file zo vroeg op zondag</div></div></div><div class="tl-row"><div class="tl-time">10:00</div><div class="tl-body"><span class="pill pause">PAUZE — 30 min</span><div class="tl-title">Parijs omgeving A10/A11 (~340 km)</div><div class="tl-sub">Koffie, Amani bewegen — tankstation voor Parijs ring</div></div></div><div class="tl-row"><div class="tl-time">10:30</div><div class="tl-body"><span class="pill drive">RIJDEN</span><div class="tl-title">Parijs ring (A86/A104) → A1 richting Brussel (~310 km)</div><div class="tl-sub">Ring vroeg op zondag rustig — wel opletten A1 oprit</div></div></div><div class="tl-row"><div class="tl-time">14:00</div><div class="tl-body"><span class="pill loire-c">THUIS ✓</span><div class="tl-title">Mechelen — thuis om 14u</div><div class="tl-sub">~6,5u netto + 30 min pauze. Vertrek 07:30 = aankomst 14:00 ✓</div></div></div><div class="stat-bar"><div class="sb-item"><div class="sb-val">~6,5u</div><div class="sb-lbl">Netto rijden</div></div><div class="sb-item"><div class="sb-val">~30 min</div><div class="sb-lbl">Pauze</div></div><div class="sb-item"><div class="sb-val">~650 km</div><div class="sb-lbl">Afstand</div></div></div></div>
+    </template>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: VOORBEREIDING                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-voorbereiding" class="page">
+  <div class="hero-vb">
+    <h1>✅ Voorbereiding reis</h1>
+    <p>Portugal Roadtrip 2026 &nbsp;|&nbsp; Mehdi · Mounia · Amani &nbsp;|&nbsp; 4/5 – 20 september</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;margin-bottom:4px;">
+      <span style="font-size:11px;color:#AAA;">🔗 Gesynchroniseerd met Google Sheets</span>
+      <button onclick="loadFromSheet()" style="font-size:11px;color:#AAA;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;cursor:pointer;">↺ Verversen</button>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="progress-text">0 van 0 afgevinkt</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <main>
+    <div class="filter-bar">
+    <span class="filter-label">Toon:</span>
+    <button class="filter-btn active" onclick="setFilter('all')">Alles</button>
+    <button class="filter-btn" onclick="setFilter('open')">⬜ Nog te doen</button>
+    <button class="filter-btn" onclick="setFilter('done')">✅ Afgevinkt</button>
+  </div>
+
+  <!-- 1. DOCUMENTEN -->
+  <div class="sectie" id="s1">
+    <div class="sectie-header" onclick="toggleSectie('s1')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">📄</span>
+        <span class="sectie-title">Documenten & administratie</span>
+        <span class="sectie-badge" id="badge-s1">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s1">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s1">
+      <div class="subsectie">
+        <div class="subsectie-title">Identiteit</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitskaart Mehdi <span class="check-sub">Geldig tot minstens dec 2026 — controleer vervaldatum</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitskaart Mounia <span class="check-sub">Geldig tot minstens dec 2026 — controleer vervaldatum</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Identiteitsdocument Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Kinderreispas of identiteitskaart — aanvragen bij gemeente indien niet beschikbaar</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Rijbewijs Mehdi <span class="tag tag-doc">Doc</span><span class="check-sub">Belgisch rijbewijs geldig in ES + PT</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Rijbewijs Mounia <span class="tag tag-doc">Doc</span><span class="check-sub">Belgisch rijbewijs geldig in ES + PT</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Voertuig</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Kentekenbewijs <span class="tag tag-auto">Auto</span><span class="check-sub">Inschrijvingsbewijs van het voertuig in de auto bewaren</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Groene kaart (verzekeringsattest) <span class="tag tag-auto">Auto</span><span class="check-sub">Activeer uitbreiding bij verzekeraar voor ES + PT</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Verzekering & zorg</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Mehdi <span class="check-sub">Europese ziekteverzekeringskaart — aanvragen bij mutualiteit</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Mounia <span class="check-sub">Europese ziekteverzekeringskaart — aanvragen bij mutualiteit</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">EHIC-kaart Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Aparte kaart op naam van Amani — aanvragen bij mutualiteit</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reisverzekering afsluiten <span class="check-sub">Medische dekking + repatriëring voor 3 personen — vergelijk via Touring of bankkaart voordelen</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Reserveringen</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Peñas Arriba printen of downloaden <span class="check-sub">+ vroeg inchecken bevestigen bij Scenario B (aankomst ~07:30)</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Alvor / Prainha verblijf <span class="check-sub">9 nachten, ma 7 – di 15 sept</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Lissabon hotel <span class="check-sub">2 nachten, wo 16 – do 17 sept — parking bevestigen</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bevestiging Poitiers hotel <span class="check-sub">1 nacht, vr 18 sept — parking aanwezig, late check-in bevestigen (aankomst ~20u)</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Fuente Dé kabelbaan reserveren <span class="check-sub">Openingstijden september controleren — evt. online ticket</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+      </div>
+      <div class="sectie-done-banner" id="done-s1">🎉 Alle documenten in orde!</div>
+    </div>
+  </div>
+
+  <!-- 2. AUTO -->
+  <div class="sectie" id="s2">
+    <div class="sectie-header" onclick="toggleSectie('s2')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🚗</span>
+        <span class="sectie-title">Auto & rijklaar maken</span>
+        <span class="sectie-badge" id="badge-s2">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s2">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s2">
+      <div class="subsectie">
+        <div class="subsectie-title">Technische controle</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bandenspanning controleren <span class="tag tag-auto">Auto</span><span class="check-sub">Inclusief reservewiel — correcte druk voor beladen auto (zie deurpost)</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Oliepeil controleren <span class="tag tag-auto">Auto</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koelvloeistof controleren <span class="tag tag-auto">Auto</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ruitenwisservloeistof bijvullen <span class="tag tag-auto">Auto</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ruitenwissers controleren <span class="tag tag-auto">Auto</span><span class="check-sub">Portugal heeft regen in september — zeker in het noorden</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Verlichting controleren (voor, achter, rem) <span class="tag tag-auto">Auto</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reservewiel aanwezig en opgepompt <span class="tag tag-auto">Auto</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Verplicht materiaal ES + PT</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Gevarendriehoek <span class="tag tag-auto">Auto</span><span class="check-sub">Verplicht in Spanje en Portugal — boete bij afwezigheid</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Veiligheidshesje (fluogeel) <span class="tag tag-auto">Auto</span><span class="check-sub">1 per inzittende verplicht in ES + PT — best 3 stuks</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autostoeltje Amani controleren <span class="tag tag-amani">Amani</span><span class="check-sub">Goed bevestigd, harnasriemen correct, geen vervaldatum overschreden</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Tol & navigatie</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ulys-badge meenemen <span class="check-sub">Werkt in FR, ES en PT — al geactiveerd ✓ Controleer saldo/abonnement voor vertrek</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Telefoonhouder in auto bevestigd <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autolader met meerdere USB-poorten <span class="tag tag-tech">Tech</span><span class="check-sub">Minimum 2 poorten — telefoon + tablet Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s2">🎉 Auto volledig rijklaar!</div>
+    </div>
+  </div>
+
+  <!-- 3. AMANI -->
+  <div class="sectie" id="s3">
+    <div class="sectie-header" onclick="toggleSectie('s3')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">👶</span>
+        <span class="sectie-title">Amani — specifieke voorbereiding</span>
+        <span class="sectie-badge" id="badge-s3">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s3">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s3">
+      <div class="subsectie">
+        <div class="subsectie-title">In de auto</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Favoriete knuffel(s) klaarleggen <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Kinderboekjes inpakken <span class="tag tag-amani">Amani</span><span class="check-sub">Minimum 3-4 boekjes — voor in de auto en voor het slapengaan</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks voor de rit inpakken <span class="tag tag-amani">Amani</span><span class="check-sub">Rijstkoeken, rozijnen, fruitpakjes — geen kruimels</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Slaapzakje of deken voor nachtrit <span class="tag tag-amani">Amani</span><span class="check-sub">Scenario B — Amani rijdt in pyjama</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reispot of reisluiers voorzien <span class="tag tag-amani">Amani</span><span class="check-sub">Voldoende voor 16 dagen + reserve</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Vochtige doekjes (ruim voorzien) <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Strand & buitenlucht</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnebrand SPF 50+ voor kinderen <span class="tag tag-amani">Amani</span><span class="check-sub">Aparte tube — niet mengen met volwassenen SPF</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zwembandjes of zwemvest <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnehoed / pet <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">UV-zwempakje <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Strandspeelgoed (emmer, schepje) <span class="tag tag-amani">Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Kleine rugzak voor daguitstappen <span class="tag tag-amani">Amani</span><span class="check-sub">Picos, Lissabon, Poitiers — handig voor gezonde snacks en speelgoed</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s3">🎉 Amani volledig klaar!</div>
+    </div>
+  </div>
+
+  <!-- 4. MEDISCH -->
+  <div class="sectie" id="s4">
+    <div class="sectie-header" onclick="toggleSectie('s4')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🏥</span>
+        <span class="sectie-title">Medische reistas</span>
+        <span class="sectie-badge" id="badge-s4">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s4">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s4">
+      <div class="subsectie">
+        <div class="subsectie-title">Koorts & pijn</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Paracetamol volwassenen (tablet) <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Paracetamol kind (siroop of zetpil) <span class="tag tag-amani">Amani</span><span class="check-sub">Dosering afstemmen op gewicht Amani</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ibuprofen volwassenen <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ibuprofen kind siroop <span class="tag tag-amani">Amani</span><span class="check-sub">Ook bij val of tandpijn — ontstekingsremmend</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Digitale thermometer <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Maag & darmen</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Imodium (diarree volwassenen) <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+        
+        
+        
+        
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Misselijkheid & wagenziekte</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Motilium siroop <span class="tag tag-amani">Amani</span><span class="check-sub">Bij misselijkheid of braken</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+        
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Wonden & huid</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ontsmettingsmiddel (Betadine of Biseptine) <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Pleisters (diverse groottes) <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Steriele gaasjes + kleefband <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Fenistil gel (insectenbeten / jeuk) <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+        
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Medische schaar <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Ogen, neus & allergie</div>
+        
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Oogdruppels (Visine of Artelac) <span class="tag tag-med">Med</span><span class="check-sub">Droge ogen door zon, zand en airco</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Antihistaminica (Cetirizine of Loratadine) <span class="tag tag-med">Med</span><span class="check-sub">Hooikoorts of allergische reactie</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Zon & insecten</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Zonnebrand SPF 50+ volwassenen <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">After Sun lotion <span class="tag tag-med">Med</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        
+        
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Noodinfo</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Lijst bloedgroepen + allergieën alle 3 <span class="check-sub">Op papier in de reisapotheek bewaren</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Contactgegevens huisarts <span class="check-sub">Telefoonnummer + adres meenemen</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Mutualitieitsnummer alle 3 noteren <span class="check-sub">Nodig bij EHIC-gebruik in het buitenland</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s4">🎉 Medische reistas compleet!</div>
+    </div>
+  </div>
+
+  <!-- 5. ETEN ONDERWEG -->
+  <div class="sectie" id="s5">
+    <div class="sectie-header" onclick="toggleSectie('s5')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">🍽️</span>
+        <span class="sectie-title">Eten & drinken onderweg</span>
+        <span class="sectie-badge" id="badge-s5">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s5">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s5">
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koelbox of koeltas voor in de auto <span class="check-sub">Voor dranken, fruit en snacks op rijdagen</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Herbruikbare waterflessen (3 stuks) <span class="check-sub">Vullen aan tankstations of supermarkten</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks rijdagen volwassenen <span class="check-sub">Noten, repen, fruit — voor nachtrit en lange etappes</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Snacks rijdagen Amani <span class="tag tag-amani">Amani</span><span class="check-sub">Rijstkoeken, rozijnen, fruitpuree zakjes — geen kruimels</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Picknickmateriaal (servetten, bestek, tas) <span class="check-sub">Voor aire-stops in Frankrijk en Spanje</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Koffie thermos meenemen <span class="check-sub">Nachtrit Scenario B — warm houden voor bestuurder</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="sectie-done-banner" id="done-s5">🎉 Eten & drinken voorzien!</div>
+    </div>
+  </div>
+
+  <!-- 6. GELD -->
+  <div class="sectie" id="s6">
+    <div class="sectie-header" onclick="toggleSectie('s6')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">💳</span>
+        <span class="sectie-title">Geld & betalingen</span>
+        <span class="sectie-badge" id="badge-s6">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s6">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s6">
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Contant geld voorzien — €200–300 <span class="check-sub">Voor markten, parkeermeters, kleine zaken, Picos-dorpjes</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Bankkaarten controleren (geldigheid + buitenlandlimiet) <span class="check-sub">Instellen via app indien nodig — buitenlandtransacties activeren</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Revolut of Wise overwegen <span class="check-sub">Geen wisselkosten, gratis opnemen — handig in Portugal</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Ulys saldo controleren voor vertrek <span class="check-sub">Voldoende tegoed voor heen + terug (~€140 tol)</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Tricount installeren <span class="check-sub">Uitgaven bijhouden per dag — <a href="https://www.tricount.com" target="_blank">tricount.com</a> of app</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      <div class="sectie-done-banner" id="done-s6">🎉 Financiën in orde!</div>
+    </div>
+  </div>
+
+  <!-- 7. TECH -->
+  <div class="sectie" id="s7">
+    <div class="sectie-header" onclick="toggleSectie('s7')">
+      <div class="sectie-header-left">
+        <span class="sectie-icon">📱</span>
+        <span class="sectie-title">Tech & navigatie</span>
+        <span class="sectie-badge" id="badge-s7">0 / 0</span>
+      </div>
+      <span class="sectie-chevron open" id="chev-s7">▼</span>
+    </div>
+    <div class="sectie-body open" id="body-s7">
+      <div class="subsectie">
+        <div class="subsectie-title">Navigatie</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Portugal <span class="tag tag-tech">Tech</span><span class="check-sub">Via app: Offline kaarten > Regio selecteren</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Spanje <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Google Maps offline downloaden — Frankrijk <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Waze installeren als backup navigatie <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Laders & stroom</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Autolader met meerdere USB-poorten <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Telefoonhouder in auto <span class="tag tag-tech">Tech</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Powerbank (min. 10.000 mAh) <span class="tag tag-tech">Tech</span><span class="check-sub">Voor daguitstappen zonder stopcontact</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Stekkeradapter controleren <span class="check-sub">Portugal = Type F (zelfde als België ✓) — geen adapter nodig</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="subsectie">
+        <div class="subsectie-title">Overig</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Extra checklist aanvullen <span class="tag tag-tech">Tech</span><span class="check-sub">Voeg eigen items toe via het notaveld hieronder — opgeslagen in Google Sheets</span></div><div class="nota-wrap"><textarea class="nota-input" rows="2" placeholder="Vul hier extra items in..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Muziekplaylist rijdagen aanmaken <span class="check-sub">Spotify offline — ook voor nachtrit</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-tick">✓</span></div><div class="check-label">Reisfoto's cloud backup instellen <span class="check-sub">Google Foto's of OneDrive automatisch uploaden via wifi</span></div><div class="nota-wrap"><textarea class="nota-input" rows="1" placeholder="Nota toevoegen..." onclick="event.stopPropagation()" oninput="scheduleSave()"></textarea></div></div>
+      </div>
+      <div class="sectie-done-banner" id="done-s7">🎉 Tech volledig klaar!</div>
+    </div>
+  </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: ALVOR                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-alvor" class="page">
+<div class="hero">
+  <h1>🏖️ Alvor — Prainha Beach</h1>
+  <p>Zondag 6 september – Woensdag 16 september &nbsp;|&nbsp; 10 nachten · Algarve</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">10</div><div class="stat-lbl">Nachten</div></div>
+    <div class="stat"><div class="stat-val">~28°C</div><div class="stat-lbl">Gem. temp sept</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-lbl">Supermarkten</div></div>
+    <div class="stat"><div class="stat-val">9</div><div class="stat-lbl">Halal opties</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-lbl">Dagplannen</div></div>
+  </div>
+</div>
+<main>
+
+<style>
+.alvor-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.alvor-tab{padding:5px 12px;border-radius:20px;border:0.5px solid var(--c-border);background:var(--c-white);font-size:11px;font-weight:600;cursor:pointer;color:var(--c-sub);transition:all .15s;white-space:nowrap}
+.alvor-tab.active{background:var(--c-alvor);color:#fff;border-color:transparent}
+.alvor-panel{display:none}.alvor-panel.active{display:block}
+.day-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.day-hdr-title{font-size:14px;font-weight:600;color:var(--c-text)}
+.achip{display:inline-flex;font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.achip-warn{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+.achip-info{background:#EEEDFE;color:#3C3489;border:0.5px solid var(--c-alvor)}
+.achip-green{background:#E1F5EE;color:#085041;border:0.5px solid #1D9E75}
+.chosen-box{border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white);margin-bottom:8px}
+.chosen-hdr{padding:7px 12px;font-size:11px;font-weight:600;color:#fff;background:var(--c-alvor)}
+.chosen-hdr.green{background:#0F6E56}
+.chosen-hdr.purple{background:#534AB7}
+.alt-toggle-btn{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-sub);background:var(--c-bg);border:0.5px solid var(--c-border);border-radius:8px;padding:5px 11px;cursor:pointer;margin-bottom:8px;transition:all .15s}
+.alt-toggle-btn:hover{border-color:#888;color:var(--c-text)}
+.alt-wrap{display:none;border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white);margin-bottom:8px}
+.alt-wrap.open{display:block}
+.alt-hdr{padding:7px 12px;font-size:11px;font-weight:600;color:#fff;background:#185FA5}
+.alt-hdr.green-alt{background:#0F6E56}
+.arows{padding:4px 0}
+.arow{display:grid;grid-template-columns:48px 1fr;padding:3px 12px;gap:4px;align-items:baseline}
+.at{font-size:10px;font-weight:600;color:var(--c-sub);line-height:1.4}
+.am{font-size:12px;color:var(--c-text);line-height:1.4}
+.as{font-size:11px;color:var(--c-sub);line-height:1.3;margin-top:1px}
+.asep{height:0.5px;background:var(--c-border);margin:2px 12px}
+.aic{display:inline-flex;font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;margin-left:3px;vertical-align:middle;white-space:nowrap}
+.ic-str{background:#E6F1FB;color:#0C447C}
+.ic-nat{background:#E1F5EE;color:#085041}
+.ic-mkt{background:#FAEEDA;color:#633806}
+.ic-rom{background:#FBEAF0;color:#72243E}
+.ic-sta{background:#EEEDFE;color:#3C3489}
+.ic-boo{background:#FAEEDA;color:#633806}
+.ic-kas{background:#EAF3DE;color:#27500A}
+.extras-grid{margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.ebox{border-radius:10px;border:0.5px solid var(--c-border);overflow:hidden}
+.ebox-hdr{padding:6px 11px;font-size:11px;font-weight:600;color:#fff}
+.ehdr-halal{background:#6D3078}
+.ehdr-veggie{background:#2E7D32}
+.ehdr-islam{background:#1A6B4A}
+.ebox-body{padding:5px 11px 7px}
+.eitem{font-size:11px;color:var(--c-text);padding:3px 0;border-bottom:0.5px solid var(--c-border);line-height:1.4}
+.eitem:last-child{border-bottom:none}
+.esub{font-size:10px;color:var(--c-sub);margin-top:1px}
+.alog{background:var(--c-bg);border:0.5px solid var(--c-border);border-radius:8px;padding:5px 11px;margin-bottom:8px;font-size:10px;color:var(--c-sub);display:flex;gap:10px;flex-wrap:wrap}
+.anote{border-radius:8px;padding:7px 11px;margin-bottom:8px;font-size:11px;line-height:1.5}
+.anote-blue{background:#EEEDFE;border:0.5px solid var(--c-alvor);color:#3C3489}
+.anote-green{background:#E1F5EE;border:0.5px solid #1D9E75;color:#085041}
+.anote-warn{background:#FAEEDA;border:0.5px solid #EF9F27;color:#633806}
+.hlbox{background:var(--c-bg);border:0.5px solid var(--c-alvor);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:var(--c-text);line-height:1.5}
+.hlbox strong{color:var(--c-alvor)}
+a.alink{color:inherit;text-decoration:none;border-bottom:0.5px dotted var(--c-border)}
+a.alink:hover{border-bottom-color:var(--c-text)}
+
+/* SUPERMARKT SECTIE */
+.smark-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.smark-card{border:0.5px solid var(--c-border);border-radius:10px;padding:12px 14px;background:var(--c-white)}
+.smark-name{font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:2px}
+.smark-info{font-size:11px;color:var(--c-sub);line-height:1.5}
+.smark-badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;background:#E1F5EE;color:#085041;margin-top:4px}
+
+@media(max-width:580px){.extras-grid{grid-template-columns:1fr 1fr}.smark-grid{grid-template-columns:1fr}}
+</style>
+
+<!-- DAG TABS -->
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:12px 0 0;">
+  <button onclick="scrollToSection('alvor-dagplanning')" style="padding:6px 14px;border-radius:16px;border:0.5px solid var(--c-alvor);background:var(--c-alvor);color:#fff;font-size:11px;font-weight:600;cursor:pointer;">📅 Dagplannen</button>
+  <button onclick="showAlvorTab('supermarkten')" style="padding:6px 14px;border-radius:16px;border:0.5px solid #0F6E56;background:#0F6E56;color:#fff;font-size:11px;font-weight:600;cursor:pointer;">🛒 Supermarkten</button>
+  <button onclick="resetAlvor()" style="padding:6px 14px;border-radius:16px;border:1.5px solid var(--c-border);background:var(--c-bg);color:var(--c-sub);font-size:11px;font-weight:600;cursor:pointer;">↺ Beginscherm</button>
+</div>
+<div id="alvor-dagplanning" class="alvor-tabs">
+  <div class="alvor-tab active" onclick="showAlvor('a6',this)">Zo 6/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a7',this)">Ma 7/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a8',this)">Di 8/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a9',this)">Wo 9/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a10',this)">Do 10/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a11',this)">Vr 11/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a12',this)">Za 12/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a13',this)">Zo 13/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a14',this)">Ma 14/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a15',this)">Di 15/9</div>
+  <div class="alvor-tab" onclick="showAlvor('a16',this)">Wo 16/9</div>
+  <div class="alvor-tab" onclick="showAlvorSection('supermarkten',this)">🛒 Supermarkten</div>
+</div>
+
+<!-- ZO 6/9 -->
+<div id="a6" class="alvor-panel active">
+  <div class="day-hdr"><span class="day-hdr-title">Zondag 6 september — Aankomstdag</span><span class="achip achip-warn">Amani vermoeid</span></div>
+  <div class="alog"><span>🚗 Alvor → Intermarché: 5 min</span><span>🚶 Boardwalk: 10 min wandelen</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Wandelen + avondeten Alvor</div><div class="arows">
+    <div class="arow"><div class="at">17:00</div><div><div class="am">Inchecken + uitpakken airbnb</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Boardwalk+Esteiro+de+Alvor+Portugal" target="_blank">Boardwalk Alvor estuarium</a><span class="aic ic-nat">Natuur</span></div><div class="as">Estr. do Alvor, Alvor &nbsp;|&nbsp; 10 min wandelen — Amani in buggy</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Village+Restaurants+Portugal" target="_blank">Avondeten Alvor dorp</a></div><div class="as">Av. Infante de Sagres, Alvor &nbsp;|&nbsp; Open v.a. 18:30 — visrestaurant aan het water</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt6')">▼ Toon alternatieve optie B</button>
+  <div id="alt6" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Supermarkt + takeaway</div><div class="arows">
+    <div class="arow"><div class="at">17:00</div><div><div class="am">Inchecken + snel uitpakken</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Intermarche+Alvor+Marachique+Portugal" target="_blank">Intermarché Alvor Marachique</a><span class="aic ic-mkt">Supermarkt</span></div><div class="as">5 min rijden — open tot 22u — grote week-inkopen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am">Takeaway in airbnb</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">R. Dr. Afonso Costa 43, 8500-016 Alvor &nbsp;|&nbsp; <a class="alink" href="https://indiangardenportugal.pt/en/" target="_blank">indiangardenportugal.pt</a></div></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Pingo+Doce+Alvor+Portugal" target="_blank">Halal kip — Pingo Doce Alvor</a><div class="esub">Bevestigd aanwezig</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Cenouras à Algarvia<div class="esub">Gemarineerde wortelen met koriander — typisch lokaal aperitief</div></div>
+      <div class="eitem">Tremoços + pão com azeite<div class="esub">Lupinebonen + olijfolie brood — Portugees aperitief aan elk terras</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Igreja+Matriz+de+Alvor+Portugal" target="_blank">Igreja Matriz de Alvor</a><div class="esub">Voormalige Moorse moskee — 5 min wandelen</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- MA 7/9 -->
+<div id="a7" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Maandag 7 september — Rustige stranddag</span></div>
+  <div class="alog"><span>🚗 Praia de Alvor: 5 min</span><span>🚶 Alvor dorp: 10 min wandelen</span></div>
+  <div class="chosen-box"><div class="chosen-hdr green">✅ Optie A — Praia de Alvor estuarium hele dag</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Alvor+Portugal" target="_blank">Praia de Alvor estuarium</a><span class="aic ic-str">Strand</span></div><div class="as">Av. Dr. Frederico Ramos Rodrigues, Alvor &nbsp;|&nbsp; 5 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick op het strand</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Village+Portugal" target="_blank">Alvor dorp verkennen</a><span class="aic ic-sta">Dorp</span></div><div class="as">10 min wandelen vanaf strand</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Waterfront+Restaurants+Portugal" target="_blank">Avondeten Alvor waterfront</a></div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt7')">▼ Toon Optie B</button>
+  <div id="alt7" class="alt-wrap"><div class="alt-hdr">Optie B — Prainha + boardwalk + Alvor dorp avond</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Prainha+Beach+Alvor+Portugal" target="_blank">Prainha Beach</a><span class="aic ic-str">Strand</span></div><div class="as">15 min wandelen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick op het strand</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Boardwalk+Esteiro+de+Alvor+Portugal" target="_blank">Boardwalk estuarium</a><span class="aic ic-nat">Natuur</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:00</div><div><div class="am">Avondeten Alvor dorp</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">Ideaal voor eerste avond buiten</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Açorda de Alho<div class="esub">Brood-knoflooksoep met koriander — vraag zonder ei</div></div>
+      <div class="eitem">Migas Alentejanas<div class="esub">Gebakken broodkruimels met knoflook — vraag versie zonder vlees</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Igreja+Matriz+de+Alvor+Portugal" target="_blank">Igreja Matriz de Alvor</a><div class="esub">Voormalige Moorse moskee</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- DI 8/9 -->
+<div id="a8" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Dinsdag 8 september — Lagos hele dag</span><span class="achip achip-info">Eerste echte daguitstap</span></div>
+  <div class="alog"><span>🚗 Alvor → Lagos: 18 min (14 km)</span><span>🚶 Lagos → Ponta da Piedade: 25 min of 5 min rijden</span><span>🚗 Ponta da Piedade → Meia Praia: 8 min</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Lagos + Ponta da Piedade + Meia Praia</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Lagos+Old+Town+Portugal" target="_blank">Lagos centrum</a><span class="aic ic-sta">Stad</span></div><div class="as">R. Silva Lopes, Lagos &nbsp;|&nbsp; 18 min rijden — parkeer marina (~€1,5/u)</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Ponta+da+Piedade+Lagos+Portugal" target="_blank">Ponta da Piedade</a><span class="aic ic-nat">Kliffen</span></div><div class="as">Estrada da Ponta da Piedade, Lagos &nbsp;|&nbsp; <a class="alink" href="https://www.lagosportugalguide.com/lagos-algarve/ponta-da-piedade-lagos.html" target="_blank">Info + kaart</a> &nbsp;|&nbsp; 5 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick aan de kliffen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">14:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Meia+Praia+Lagos+Portugal" target="_blank">Meia Praia Lagos</a><span class="aic ic-str">Strand</span></div><div class="as">Meia Praia, Lagos &nbsp;|&nbsp; 8 min rijden — 4 km lang, buggytoegankelijk</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Lagos+Old+Town+Restaurants+Portugal" target="_blank">Avondeten Lagos centrum</a></div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt8')">▼ Toon alternatieve optie B</button>
+  <div id="alt8" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Portimão + Praia da Rocha</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Portimao+City+Centre+Portugal" target="_blank">Portimão centrum + Marina</a><span class="aic ic-sta">Stad</span></div><div class="as">15 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Mercado+Municipal+Lagos+Portugal" target="_blank">Lagos Mercado Municipal</a><span class="aic ic-mkt">Markt</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">14:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+da+Rocha+Portimao+Portugal" target="_blank">Praia da Rocha</a><span class="aic ic-str">Strand</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am">Avondeten Portimão — grilled sardines</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Casbah+Restaurant+Lagos+Portugal" target="_blank">Casbah — Lagos ★4.8</a><div class="esub">R. da Barroca 70, Lagos &nbsp;|&nbsp; Marokkaans halal ★4.8</div></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a><div class="esub">Av. Tomás Cabreira 26, Portimão &nbsp;|&nbsp; Indiaas halal ★4.7</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Batatas à Murro<div class="esub">Gepunchte aardappelen in grof zout met olijfolie en knoflook</div></div>
+      <div class="eitem">Pimentos Padron<div class="esub">Gegrilde groene pepertjes met grof zout</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Igreja+Matriz+de+Lagos+Portugal" target="_blank">Igreja Matriz Lagos</a><div class="esub">Gebouwd op Moorse funderingen</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- WO 9/9 -->
+<div id="a9" class="alvor-panel">
+  <div class="anote anote-blue">⏰ Alvor maandmarkt 08:00–14:00 — <a class="alink" href="https://maps.google.com/?q=Estrada+da+Torrealta+Alvor+Portugal" target="_blank">Estrada da Torrealta</a>. Enige kans!</div>
+  <div class="day-hdr"><span class="day-hdr-title">Woensdag 9 september — Alvor markt + Prainha + avond Albufeira</span></div>
+  <div class="alog"><span>🚶 Alvor markt: 10 min wandelen</span><span>🚶 Prainha: 15 min wandelen</span><span>🚗 Alvor → Albufeira: 45 min (40 km)</span><span>⚠️ Old Town: carrier voor Amani</span></div>
+  <div class="chosen-box"><div class="chosen-hdr purple">✅ Planning van de dag</div><div class="arows">
+    <div class="arow"><div class="at">09:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Estrada+da+Torrealta+Alvor+Portugal" target="_blank">Alvor maandmarkt</a><span class="aic ic-mkt">Markt</span></div><div class="as">Estrada da Torrealta, Alvor &nbsp;|&nbsp; 10 min wandelen — lokale groenten, fruit</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Prainha+Beach+Alvor+Portugal" target="_blank">Prainha Beach</a><span class="aic ic-str">Strand</span></div><div class="as">Prainha, 8500-052 Alvor &nbsp;|&nbsp; 15 min wandelen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick op het strand</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">16:00</div><div><div class="am">Terug airbnb — omfrissen + Amani rust</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">17:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Albufeira+Old+Town+Portugal" target="_blank">Albufeira Old Town</a><span class="aic ic-sta">Stad</span></div><div class="as">R. 5 de Outubro, Albufeira &nbsp;|&nbsp; 45 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Albufeira+Old+Town+Restaurants+Portugal" target="_blank">Avondeten Albufeira Old Town</a></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">21:30</div><div><div class="am">Terug Alvor — 45 min rijden</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mother+India+Albufeira+Portugal" target="_blank">Mother India — Albufeira ★4.8</a><div class="esub">R. Alves Correia 10, Albufeira &nbsp;|&nbsp; Indiaas halal ★4.8</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Xerém — Algarve cornmeal<div class="esub">Romige maïspap met knoflook en olijfolie — lokaal Algarve gerecht</div></div>
+      <div class="eitem">Gaspacho Alentejano<div class="esub">Koude broodsoep met tomaat, komkommer en koriander</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem">Al-Buhera = "kasteel op zee"<div class="esub">Arabische naam — Moorse oorsprong in stadsvorm Albufeira</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- DO 10/9 -->
+<div id="a10" class="alvor-panel">
+  <div class="anote anote-green">Hersteldag na 4 drukke dagen. Strand + airbnb. Geen dagtrip.</div>
+  <div class="day-hdr"><span class="day-hdr-title">Donderdag 10 september — Rustdag</span><span class="achip achip-green">Bewust ingebouwd</span></div>
+  <div class="alog"><span>🚶 Prainha: 15 min wandelen</span><span>🚗 Supermarkt: 5 min rijden</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Ochtendstrand + airbnb namiddag</div><div class="arows">
+    <div class="arow"><div class="at">10:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Prainha+Beach+Alvor+Portugal" target="_blank">Prainha — ochtendstrand</a><span class="aic ic-str">Strand</span></div><div class="as">Prainha, 8500-052 Alvor &nbsp;|&nbsp; 15 min wandelen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick op het strand of thuis</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:00</div><div><div class="am">Airbnb — zwembad of tuin</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am">Takeaway Alvor of thuis koken</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt10')">▼ Toon alternatieve optie B</button>
+  <div id="alt10" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Praia de Alvor + midweek inkopen</div><div class="arows">
+    <div class="arow"><div class="at">10:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Alvor+Portugal" target="_blank">Praia de Alvor estuarium</a><span class="aic ic-str">Strand</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Pingo+Doce+Alvor+Portugal" target="_blank">Pingo Doce Alvor</a><span class="aic ic-mkt">Supermarkt</span></div><div class="as">5 min rijden — midweek bevoorrading</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am">Koken in airbnb</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">Dichtbij voor rustige avond</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch thuis</div><div class="ebox-body">
+      <div class="eitem">Cataplana de legumes<div class="esub">Groenteschotel in koperen pan — courgette, tomaat, peper, knoflook</div></div>
+      <div class="eitem">Ovos com espargos<div class="esub">Eieren met asperges — Alentejaans, simpel te bereiden</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem">Rustdag — geen uitstap</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- VR 11/9 -->
+<div id="a11" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Vrijdag 11 september — Silves + Foia top Monchique</span><span class="achip achip-warn">Jumu'ah Moubarak 🕌</span></div>
+  <div class="alog"><span>🚗 Alvor → Silves: 30 min (25 km)</span><span>🚶 Kasteel → Museum: 3 min</span><span>🚗 Silves → Foia: 35 min (bochtig)</span><span>🚗 Foia → Alvor: 45 min</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Silves kasteel + museum + Foia top</div><div class="arows">
+    <div class="arow"><div class="at">09:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Silves+Portugal" target="_blank">Silves — Moorse kasteel</a><span class="aic ic-kas">Kasteel</span></div><div class="as">R. do Castelo, 8300 Silves &nbsp;|&nbsp; <a class="alink" href="https://www.cm-silves.pt/municipio/turismo/patrimonio/castelo-de-silves" target="_blank">cm-silves.pt</a> &nbsp;|&nbsp; Open 09:00–17:30</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Museu+Municipal+de+Silves+Portugal" target="_blank">Silves Arch. Museum</a><span class="aic ic-sta">Museum</span></div><div class="as">R. das Portas de Loulé 14, Silves &nbsp;|&nbsp; <a class="alink" href="https://www.museuarqueologicosilves.com/" target="_blank">museuarqueologicosilves.com</a> &nbsp;|&nbsp; Open 10:00–18:00</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Silves+Restaurants+Portugal" target="_blank">Lunch in Silves</a></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">14:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Foia+Monchique+Portugal" target="_blank">Foia top Monchique</a><span class="aic ic-nat">902m</span></div><div class="as">Estrada da Foia, Monchique &nbsp;|&nbsp; 35 min rijden bochtig</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">16:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Monchique+Portugal" target="_blank">Monchique dorp + medronho</a></div><div class="as">Monchique, 8550-469 &nbsp;|&nbsp; 10 min van Foia top</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">17:30</div><div><div class="am">Terug Alvor — 45 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:30</div><div><div class="am">Avondeten of takeaway Alvor</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt11')">▼ Toon alternatieve optie B</button>
+  <div id="alt11" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Silves + Caldas de Monchique</div><div class="arows">
+    <div class="arow"><div class="at">09:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Silves+Portugal" target="_blank">Silves kasteel + museum</a><span class="aic ic-kas">Kasteel</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:30</div><div><div class="am">Lunch Silves</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">14:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Caldas+de+Monchique+Portugal" target="_blank">Caldas de Monchique</a><span class="aic ic-nat">Bergdorp</span></div><div class="as">30 min rijden — bronwater, schaduw</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">17:00</div><div><div class="am">Terug Alvor — 40 min rijden</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem">Grilled vis — Silves<div class="esub">Bacalhau + gegrilde vis = altijd halal in Silves</div></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — op terugweg</a><div class="esub">Via Portimão — 15 min omrijden</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch Silves</div><div class="ebox-body">
+      <div class="eitem">Açorda de tomate<div class="esub">Warme tomatensoep met brood en knoflook — vraag zonder bacalhau</div></div>
+      <div class="eitem">Gaspacho Alentejano<div class="esub">Koude broodsoep — dikker dan Spaans</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch Silves</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Silves+Portugal" target="_blank">Xelb — Moorse hoofdstad Al-Gharb</a><div class="esub">Kasteel + kathedraal (ex-moskee) + Almohad-put 11e eeuw</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ZA 12/9 -->
+<div id="a12" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Zaterdag 12 september — Dolfijnen + Praia da Rocha</span><span class="achip achip-warn">Boot vroeg boeken!</span></div>
+  <div class="alog"><span>🚗 Alvor → Portimão marina: 15 min</span><span>🚶 Marina → Praia da Rocha: 20 min wandelen</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Dolfijnen Portimão + Praia da Rocha hele dag</div><div class="arows">
+    <div class="arow"><div class="at">09:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Marina+de+Portimao+Portugal" target="_blank">Portimão marina — dolfijnenboot</a><span class="aic ic-boo">Boot ~2u</span></div><div class="as">Cais S. Francisco, Marina de Portimão &nbsp;|&nbsp; Boek via: <a class="alink" href="https://5emotionsalgarve.com/en/" target="_blank">5emotions Algarve</a> (gecertificeerd Turismo PT + AOC) &nbsp;|&nbsp; <a class="alink" href="https://www.getyourguide.com/algarve-l66/portimao-2-hour-dolphin-watching-boat-tour-t391124/" target="_blank">GetYourGuide</a></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+da+Rocha+Portimao+Portugal" target="_blank">Praia da Rocha — picknick + strand</a><span class="aic ic-str">Strand</span></div><div class="as">Av. Tomás Cabreira, Portimão &nbsp;|&nbsp; 20 min wandelen van marina</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Portimao+Arade+River+Restaurants+Portugal" target="_blank">Avondeten Portimão — sardinhas aan Arade</a></div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt12')">▼ Toon alternatieve optie B</button>
+  <div id="alt12" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Benagil grot + Carvoeiro</div><div class="arows">
+    <div class="arow"><div class="at">09:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Benagil+Cave+Portugal" target="_blank">Benagil grot — speedboot</a><span class="aic ic-boo">Boot</span></div><div class="as">25 min rijden — geen kajak met peuter</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Boardwalk+Carvoeiro+Portugal" target="_blank">Carvoeiro boardwalk + dorp</a><span class="aic ic-sta">Dorp</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Carvoeiro+Portugal" target="_blank">Praia de Carvoeiro</a><span class="aic ic-str">Strand</span></div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a><div class="esub">R. Diogo Tomé 34</div></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Curry+House+Indian+Tandoori+Praia+da+Rocha+Portugal" target="_blank">Curry House — Praia da Rocha</a><div class="esub">R. Bartolomeu Dias</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Balance+Cafe+Portimao+Portugal" target="_blank">Balance Cafe — Portimão</a><div class="esub">R. Diogo Tomé 26, Portimão &nbsp;|&nbsp; 100% veggie café</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mesquita+Portimao+Rua+16+de+Maio+Portugal" target="_blank">Mesquita de Portimão</a><div class="esub">R. 16 de Maio 51A, Portimão &nbsp;|&nbsp; Sunni moskee</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ZO 13/9 — ROMMELMARKT -->
+<div id="a13" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Zondag 13 september — Rommelmarkt Portimão + Praia da Rocha</span></div>
+  <div class="alog"><span>🚗 Alvor → Portimão marktterrein: 15 min</span><span>🚶 Markt → Praia da Rocha: 20 min wandelen</span><span>🕗 Rommelmarkt: 08:00–12:30</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Rommelmarkt Portimão + Praia da Rocha hele dag</div><div class="arows">
+    <div class="arow"><div class="at">09:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Parque+de+Feiras+Exposicoes+Portimao+Portugal" target="_blank">Rommelmarkt Portimão</a><span class="aic ic-rom">Rommelmarkt</span></div><div class="as">Av. Miguel Bombarda, Portimão &nbsp;|&nbsp; 15 min rijden — Open 08:00–12:30</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+da+Rocha+Portimao+Portugal" target="_blank">Praia da Rocha — picknick + strand</a><span class="aic ic-str">Strand</span></div><div class="as">20 min wandelen — brede boulevard, hele namiddag</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am">Picknick op het strand</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Portimao+Arade+River+Restaurants+Portugal" target="_blank">Avondeten Portimão — sardinhas aan de Arade</a></div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt13')">▼ Toon Optie B</button>
+  <div id="alt13" class="alt-wrap"><div class="alt-hdr green-alt">Optie B — Ferragudo + Praia da Rocha</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Ferragudo+Village+Portugal" target="_blank">Ferragudo — vissersdorpje</a><span class="aic ic-sta">Dorp</span></div><div class="as">20 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Ferragudo+Portugal" target="_blank">Praia de Ferragudo</a><span class="aic ic-str">Strand</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+da+Rocha+Portimao+Portugal" target="_blank">Praia da Rocha</a><span class="aic ic-str">Strand</span></div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Curry+House+Indian+Tandoori+Praia+da+Rocha+Portugal" target="_blank">Curry House — Praia da Rocha</a></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Balance+Cafe+Portimao+Portugal" target="_blank">Balance Cafe — Portimão</a><div class="esub">100% veggie café</div></div>
+      <div class="eitem">Cataplana de legumes<div class="esub">Groenteschotel in koperen pan</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mesquita+Portimao+Rua+16+de+Maio+Portugal" target="_blank">Mesquita de Portimão</a><div class="esub">R. 16 de Maio 51A</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- MA 14/9 — SILVES MARKT + FERRAGUDO -->
+<div id="a14" class="alvor-panel">
+  <div class="day-hdr"><span class="day-hdr-title">Maandag 14 september — Silves markt + Ferragudo</span><span class="achip achip-green">3e maandag = Silves buitenmarkt ✓</span></div>
+  <div class="hlbox"><strong>Waarom Silves maandag?</strong> De 3e maandag van de maand is de speciale buitenmarkt van Silves — kramen in de straten rond het Mercado Municipal. Daarna Ferragudo, het minst bekende vissersdorpje van de westelijke Algarve.</div>
+  <div class="alog"><span>🚗 Alvor → Silves: 30 min</span><span>🚗 Silves → Ferragudo: 25 min</span><span>🚗 Ferragudo → Alvor: 20 min</span><span>🕗 Buitenmarkt: 08:00–13:00</span></div>
+  <div class="chosen-box"><div class="chosen-hdr purple">✅ Silves markt + Mercado Municipal + Ferragudo</div><div class="arows">
+    <div class="arow"><div class="at">09:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Mercado+Municipal+de+Silves+Portugal" target="_blank">Silves Mercado Municipal</a><span class="aic ic-mkt">Markt</span></div><div class="as">R. Cruz de Portugal, Silves &nbsp;|&nbsp; 30 min rijden — Open ma-za 06:30–15:00</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">09:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Largo+da+Fissul+Silves+Portugal" target="_blank">Silves buitenmarkt</a><span class="aic ic-mkt">Buitenmarkt</span></div><div class="as">2 min te voet — 3e maandag: kramen in de straten rond kasteel</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Silves+Portugal" target="_blank">Silves centrum wandeling</a><span class="aic ic-sta">Dorp</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Ferragudo+Village+Portugal" target="_blank">Ferragudo — vissersdorpje</a><span class="aic ic-sta">Dorp</span></div><div class="as">Ferragudo, 8400-220 Lagoa &nbsp;|&nbsp; 25 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Ferragudo+Portugal" target="_blank">Praia de Ferragudo — picknick + strand</a><span class="aic ic-str">Strand</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">16:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Ferragudo+Portugal" target="_blank">Kasteel Ferragudo</a><span class="aic ic-nat">Kasteel</span></div><div class="as">R. do Castelo, Ferragudo &nbsp;|&nbsp; 5 min wandelen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Ferragudo+Waterfront+Restaurants+Portugal" target="_blank">Avondeten Ferragudo waterfront</a></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">20:00</div><div><div class="am">Terug Alvor — 20 min rijden</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt14')">▼ Toon alternatieve optie</button>
+  <div id="alt14" class="alt-wrap"><div class="alt-hdr">Alternatief — Portimão Mercado + Ferragudo</div><div class="arows">
+    <div class="arow"><div class="at">09:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Mercado+Municipal+Portimao+Avenida+Sao+Joao+de+Deus+Portugal" target="_blank">Mercado Municipal Portimão</a><span class="aic ic-mkt">Markt</span></div><div class="as">15 min rijden — open ma–vr 07:00–14:00</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Ferragudo+Village+Portugal" target="_blank">Ferragudo + strand + kasteel</a><span class="aic ic-sta">Dorp</span></div><div class="as">10 min rijden vanuit Portimão</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem">Verse vis Ferragudo<div class="esub">Directe aanvoer — gegrilde vis altijd halal</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Silves markt picknick<div class="esub">Verse vijgen, queijo fresco, olijven, amandelen</div></div>
+      <div class="eitem">Açorda de tomate<div class="esub">Tomatensoep met brood — vraag zonder bacalhau</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Castelo+de+Ferragudo+Portugal" target="_blank">Kasteel Ferragudo</a><div class="esub">Moorse verdedigingspost — Arade monding</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- DI 15/9 -->
+<div id="a15" class="alvor-panel">
+  <div class="anote anote-warn">Avond 15 sept = koffers pakken. Dag rustig houden voor energie.</div>
+  <div class="day-hdr"><span class="day-hdr-title">Dinsdag 15 september — Albufeira + Praia São Rafael</span><span class="achip achip-warn">Avond: koffers pakken</span></div>
+  <div class="alog"><span>🚗 Alvor → Albufeira: 45 min (40 km)</span><span>🚗 Albufeira → São Rafael: 8 min</span><span>⚠️ Old Town kasseien: carrier voor Amani</span><span>🚗 Albufeira → Alvor: 45 min terug</span></div>
+  <div class="chosen-box"><div class="chosen-hdr">✅ Optie A — Albufeira Old Town + Praia São Rafael</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Albufeira+Old+Town+Portugal" target="_blank">Albufeira Old Town</a><span class="aic ic-sta">Stad</span></div><div class="as">R. 5 de Outubro, Albufeira &nbsp;|&nbsp; 45 min rijden — carrier voor Amani!</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Praia+de+Sao+Rafael+Albufeira+Portugal" target="_blank">Praia São Rafael — picknick + strand</a><span class="aic ic-str">Strand</span></div><div class="as">Praia de São Rafael, Albufeira &nbsp;|&nbsp; 8 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">17:30</div><div><div class="am">Terug Alvor — 45 min rijden</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">19:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Waterfront+Restaurants+Portugal" target="_blank">Laatste avondeten Alvor</a></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">21:00</div><div><div class="am">Koffers pakken</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt15')">▼ Toon alternatieve optie B</button>
+  <div id="alt15" class="alt-wrap"><div class="alt-hdr green-alt">Alternatief B — Prainha + Alvor dorp afsluiter</div><div class="arows">
+    <div class="arow"><div class="at">10:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Prainha+Beach+Alvor+Portugal" target="_blank">Prainha — laatste ochtend</a><span class="aic ic-str">Strand</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">15:00</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Village+Portugal" target="_blank">Alvor dorp + winkeltjes</a><span class="aic ic-sta">Dorp</span></div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">18:30</div><div><div class="am">Laatste avondeten Alvor</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">20:30</div><div><div class="am">Koffers pakken</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal</div><div class="ebox-body">
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mother+India+Albufeira+Portugal" target="_blank">Mother India — Albufeira ★4.8</a></div>
+      <div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor</a><div class="esub">Dichtbij voor laatste avond</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Vegetarisch</div><div class="ebox-body">
+      <div class="eitem">Pastel de nata + galão<div class="esub">Klassiek Portugees afsluiten — eetbaar door Amani</div></div>
+      <div class="eitem">Ovos mexidos com cogumelos<div class="esub">Roerei met wilde paddestoelen</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Islamitisch Albufeira</div><div class="ebox-body">
+      <div class="eitem">Al-Buhera = "kasteel op zee"<div class="esub">Arabische naam — Moorse oorsprong in stadsvorm</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- WO 16/9 -->
+<div id="a16" class="alvor-panel">
+  <div class="anote anote-green">Koffers al gepakt. Alleen wagen inladen en vertrekken. Aankomst Lissabon ~16:00.</div>
+  <div class="day-hdr"><span class="day-hdr-title">Woensdag 16 september — Vertrek naar Lissabon</span><span class="achip achip-green">Koffers in wagen inladen</span></div>
+  <div class="alog"><span>🚗 Alvor → Lissabon: 2u30 (280 km via A2)</span><span>⛽ Pauze Setúbal: +20 min</span><span>✅ Tol via Ulys-badge</span></div>
+  <div class="chosen-box"><div class="chosen-hdr green">✅ Optie A — Rustige ochtend → Lissabon 16:00</div><div class="arows">
+    <div class="arow"><div class="at">09:00</div><div><div class="am">Ontbijt airbnb — geen haast</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">10:30</div><div><div class="am">Wagen inladen + checkout airbnb</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">11:30</div><div><div class="am"><a class="alink" href="https://maps.google.com/?q=Alvor+Boardwalk+Esteiro+de+Alvor+Portugal" target="_blank">Laatste koffie Alvor boardwalk</a></div><div class="as">Estr. do Alvor, Alvor &nbsp;|&nbsp; 10 min wandelen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">12:30</div><div><div class="am">Vertrek Alvor → A2 richting Lissabon</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">14:00</div><div><div class="am">Pauze Setúbal of Palmela</div><div class="as">Koffie + Amani stretchen</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">16:00</div><div><div class="am">Aankomst Lissabon — inchecken hotel</div></div></div>
+  </div></div>
+  <button class="alt-toggle-btn" onclick="toggleAlt('alt16')">▼ Toon Optie B</button>
+  <div id="alt16" class="alt-wrap"><div class="alt-hdr">Optie B — Vroeg vertrek → Lissabon 13:30</div><div class="arows">
+    <div class="arow"><div class="at">08:30</div><div><div class="am">Ontbijt + wagen inladen + checkout</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">10:30</div><div><div class="am">Vertrek Alvor → Lissabon (via A2)</div></div></div><div class="asep"></div>
+    <div class="arow"><div class="at">13:30</div><div><div class="am">Aankomst Lissabon — meer tijd om te verkennen</div></div></div>
+  </div></div>
+  <div class="extras-grid">
+    <div class="ebox"><div class="ebox-hdr ehdr-halal">🕌 Halal onderweg</div><div class="ebox-body">
+      <div class="eitem">Setúbal — Kebab of Indiaas<div class="esub">Langs N252 — Turkse en Indiase eetgelegenheden</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-veggie">🌿 Meenemen</div><div class="ebox-body">
+      <div class="eitem">Lokale Algarve producten<div class="esub">Amandelen, vijgenpasta, olijfolie — bij Intermarché</div></div>
+    </div></div>
+    <div class="ebox"><div class="ebox-hdr ehdr-islam">☪️ Lissabon vooruitblik</div><div class="ebox-body">
+      <div class="eitem">Mouraria wijk<div class="esub">Historische Moorse wijk — halal restaurants + islamitisch erfgoed</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- SUPERMARKTEN TAB -->
+<div id="supermarkten" class="alvor-panel">
+  <div class="section-title">🛒 Supermarkten rondom Alvor</div>
+  <div class="smark-grid">
+    <div class="smark-card">
+      <div class="smark-name"><a class="alink" href="https://maps.google.com/?q=Intermarche+Alvor+Marachique+Portugal" target="_blank">Intermarché Alvor Marachique</a></div>
+      <div class="smark-info">Estrada de Alvor<br>⏱ 5 min rijden · ⭐ 4.3<br>🕗 Elke dag 08:00–22:00</div>
+      <span class="smark-badge">Grootste keuze</span>
+    </div>
+    <div class="smark-card">
+      <div class="smark-name"><a class="alink" href="https://maps.google.com/?q=Intermarche+Alvor+Centro+Portugal" target="_blank">Intermarché Alvor Centro</a></div>
+      <div class="smark-info">Areal do Poço 4<br>⏱ 7 min rijden · ⭐ 4.0<br>🕗 Elke dag 08:00–22:00</div>
+      <span class="smark-badge">Centrum Alvor</span>
+    </div>
+    <div class="smark-card">
+      <div class="smark-name"><a class="alink" href="https://maps.google.com/?q=Pingo+Doce+Alvor+Portugal" target="_blank">Pingo Doce Alvor</a></div>
+      <div class="smark-info">Urbanização S. Pedro<br>⏱ 5 min rijden · ⭐ 4.1<br>🕗 Elke dag 08:00–22:00<br>✅ Halal kip bevestigd aanwezig</div>
+      <span class="smark-badge">Halal kip</span>
+    </div>
+    <div class="smark-card">
+      <div class="smark-name"><a class="alink" href="https://maps.google.com/?q=Lidl+Portimao+Portugal" target="_blank">Lidl Portimão</a></div>
+      <div class="smark-info">Av. V7 Barranco Rodrigo<br>⏱ 15 min rijden · ⭐ 4.2<br>🕗 Ma–za 08:00–21:30 · Zo 08:00–23:00</div>
+      <span class="smark-badge">Goedkoop</span>
+    </div>
+  </div>
+
+<div id="alvor-halal" class="alvor-panel">
+<style>
+.ovpanel-day{margin-bottom:12px;border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white)}
+.ovpanel-daylabel{padding:6px 12px;font-size:11px;font-weight:700;color:#fff;background:#6D3078}
+.ovpanel-items{padding:4px 12px 8px}
+</style>
+<div style="font-size:15px;font-weight:700;color:var(--c-text);margin-bottom:12px;">🕌 Halal opties — alle dagen</div>
+
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zondag 6/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">R. Dr. Afonso Costa 43, 8500-016 Alvor  |  <a class="alink" href="https://indiangardenportugal.pt/en/" target="_blank">indiangardenportugal.pt</a></div></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Pingo+Doce+Alvor+Portugal" target="_blank">Halal kip — Pingo Doce Alvor</a><div class="esub">Bevestigd aanwezig</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Maandag 7/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">Ideaal voor eerste avond buiten</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Dinsdag 8/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Casbah+Restaurant+Lagos+Portugal" target="_blank">Casbah — Lagos ★4.8</a><div class="esub">R. da Barroca 70, Lagos  |  Marokkaans halal ★4.8</div></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a><div class="esub">Av. Tomás Cabreira 26, Portimão  |  Indiaas halal ★4.7</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Woensdag 9/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mother+India+Albufeira+Portugal" target="_blank">Mother India — Albufeira ★4.8</a><div class="esub">R. Alves Correia 10, Albufeira  |  Indiaas halal ★4.8</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Donderdag 10/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor ★4.8</a><div class="esub">Dichtbij voor rustige avond</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Vrijdag 11/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Grilled vis — Silves<div class="esub">Bacalhau + gegrilde vis = altijd halal in Silves</div></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — op terugweg</a><div class="esub">Via Portimão — 15 min omrijden</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zaterdag 12/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a><div class="esub">R. Diogo Tomé 34</div></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Curry+House+Indian+Tandoori+Praia+da+Rocha+Portugal" target="_blank">Curry House — Praia da Rocha</a><div class="esub">R. Bartolomeu Dias</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zondag 13/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Masala+House+Portimao+Portugal" target="_blank">Masala House — Portimão ★4.7</a></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Curry+House+Indian+Tandoori+Praia+da+Rocha+Portugal" target="_blank">Curry House — Praia da Rocha</a></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Maandag 14/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Verse vis Ferragudo<div class="esub">Directe aanvoer — gegrilde vis altijd halal</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Dinsdag 15/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Mother+India+Albufeira+Portugal" target="_blank">Mother India — Albufeira ★4.8</a></div>
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Indian+Garden+Alvor+Portugal" target="_blank">Indian Garden — Alvor</a><div class="esub">Dichtbij voor laatste avond</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Woensdag 16/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Setúbal — Kebab of Indiaas<div class="esub">Langs N252 — Turkse en Indiase eetgelegenheden</div></div>
+</div>
+    </div>
+</div>
+
+<div id="alvor-veggie" class="alvor-panel">
+<style>
+.ovpanel-day{margin-bottom:12px;border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white)}
+.ovpanel-daylabel{padding:6px 12px;font-size:11px;font-weight:700;color:#fff;background:#2E7D32}
+.ovpanel-items{padding:4px 12px 8px}
+</style>
+<div style="font-size:15px;font-weight:700;color:var(--c-text);margin-bottom:12px;">🌿 Vegetarische opties — alle dagen</div>
+
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zondag 6/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Cenouras à Algarvia<div class="esub">Gemarineerde wortelen met koriander — typisch lokaal aperitief</div></div>
+<div class="eitem">Tremoços + pão com azeite<div class="esub">Lupinebonen + olijfolie brood — Portugees aperitief aan elk terras</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Maandag 7/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Açorda de Alho<div class="esub">Brood-knoflooksoep met koriander — vraag zonder ei</div></div>
+<div class="eitem">Migas Alentejanas<div class="esub">Gebakken broodkruimels met knoflook — vraag versie zonder vlees</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Dinsdag 8/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Batatas à Murro<div class="esub">Gepunchte aardappelen in grof zout met olijfolie en knoflook</div></div>
+<div class="eitem">Pimentos Padron<div class="esub">Gegrilde groene pepertjes met grof zout</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Woensdag 9/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Xerém — Algarve cornmeal<div class="esub">Romige maïspap met knoflook en olijfolie — lokaal Algarve gerecht</div></div>
+<div class="eitem">Gaspacho Alentejano<div class="esub">Koude broodsoep met tomaat, komkommer en koriander</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Donderdag 10/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Cataplana de legumes<div class="esub">Groenteschotel in koperen pan — courgette, tomaat, peper, knoflook</div></div>
+<div class="eitem">Ovos com espargos<div class="esub">Eieren met asperges — Alentejaans, simpel te bereiden</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Vrijdag 11/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Açorda de tomate<div class="esub">Warme tomatensoep met brood en knoflook — vraag zonder bacalhau</div></div>
+<div class="eitem">Gaspacho Alentejano<div class="esub">Koude broodsoep — dikker dan Spaans</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zaterdag 12/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Balance+Cafe+Portimao+Portugal" target="_blank">Balance Cafe — Portimão</a><div class="esub">R. Diogo Tomé 26, Portimão  |  100% veggie café</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Zondag 13/9</div>
+      <div class="ovpanel-items">
+<div class="eitem"><a class="alink" href="https://maps.google.com/?q=Balance+Cafe+Portimao+Portugal" target="_blank">Balance Cafe — Portimão</a><div class="esub">100% veggie café</div></div>
+<div class="eitem">Cataplana de legumes<div class="esub">Groenteschotel in koperen pan</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Maandag 14/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Silves markt picknick<div class="esub">Verse vijgen, queijo fresco, olijven, amandelen</div></div>
+<div class="eitem">Açorda de tomate<div class="esub">Tomatensoep met brood — vraag zonder bacalhau</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Dinsdag 15/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Pastel de nata + galão<div class="esub">Klassiek Portugees afsluiten — eetbaar door Amani</div></div>
+<div class="eitem">Ovos mexidos com cogumelos<div class="esub">Roerei met wilde paddestoelen</div></div>
+</div>
+    </div>
+    <div class="ovpanel-day">
+      <div class="ovpanel-daylabel">Woensdag 16/9</div>
+      <div class="ovpanel-items">
+<div class="eitem">Lokale Algarve producten<div class="esub">Amandelen, vijgenpasta, olijfolie — bij Intermarché</div></div>
+</div>
+    </div>
+</div>
+
+</div>
+
+<script>
+function showAlvorTab(id) {
+  document.querySelectorAll('.alvor-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.alvor-tab').forEach(function(t){ t.classList.remove('active'); });
+  var panel = document.getElementById(id);
+  if (panel) { panel.classList.add('active'); window.scrollTo(0,0); }
+}
+function showAlvor(id, el) {
+  document.querySelectorAll('.alvor-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.alvor-tab').forEach(t => t.classList.remove('active'));
+  var panel = document.getElementById(id);
+  if (panel) panel.classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function scrollToSection(sectionId) {
+  if (sectionId === 'alvor-dagplanning') {
+    var tabs = document.querySelectorAll('.alvor-tab');
+    showAlvor('a6', tabs[0]);
+    var anchor = document.getElementById('alvor-dagplanning');
+    if (anchor) setTimeout(function(){ anchor.scrollIntoView({behavior:'smooth', block:'start'}); }, 50);
+  } else if (sectionId === 'alvor-supermarkten') {
+    var tabs = document.querySelectorAll('.alvor-tab');
+    var superTab = null;
+    tabs.forEach(function(t){ if (t.textContent.includes('Supermarkt')) superTab = t; });
+    showAlvor('supermarkten', superTab);
+    var panel = document.getElementById('supermarkten');
+    if (panel) setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'start'}); }, 50);
+  } else if (sectionId === 'alvor-halal') {
+    var tabs = document.querySelectorAll('.alvor-tab');
+    showAlvor('a6', tabs[0]);
+    setTimeout(function(){
+      var halalBlok = document.querySelector('#page-alvor .ebox-hdr.ehdr-halal');
+      if (halalBlok) halalBlok.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 80);
+  }
+}
+function resetAlvor() {
+  var tabs = document.querySelectorAll('.alvor-tab');
+  showAlvor('a6', tabs[0]);
+}
+function toggleAlt(id) {
+  const box = document.getElementById(id);
+  const open = box.classList.toggle('open');
+  const btn = box.previousElementSibling;
+  if (open) { btn.textContent = btn.textContent.replace('▼','▲').replace('Toon','Verberg'); }
+  else { btn.textContent = btn.textContent.replace('▲','▼').replace('Verberg','Toon'); }
+}
+</script>
+
+</main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: LISSABON                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-lissabon" class="page">
+<div class="hero" style="background:#993556">
+  <h1>🏙️ Lissabon</h1>
+  <p>Woensdag 16 – Vrijdag 18 september &nbsp;|&nbsp; 2 nachten · 1 volle dag</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Nachten</div></div>
+    <div class="stat"><div class="stat-val">~26°C</div><div class="stat-lbl">Gem. temp sept</div></div>
+    <div class="stat"><div class="stat-val">Mouraria</div><div class="stat-lbl">Islamitisch hart</div></div>
+    <div class="stat"><div class="stat-val">Belém</div><div class="stat-lbl">Buggy-vriendelijk</div></div>
+    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Checkout opties</div></div>
+  </div>
+</div>
+<main>
+
+<style>
+.lis-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.lis-tab{padding:5px 12px;border-radius:20px;border:0.5px solid var(--c-border);background:var(--c-white);font-size:11px;font-weight:600;cursor:pointer;color:var(--c-sub);transition:all .15s;white-space:nowrap}
+.lis-tab.active{background:#993556;color:#fff;border-color:transparent}
+.lis-panel{display:none}.lis-panel.active{display:block}
+.lis-note{border-radius:8px;padding:7px 11px;margin-bottom:8px;font-size:11px;line-height:1.5}
+.lis-note-pink{background:#FBEAF0;border:0.5px solid #993556;color:#72243E}
+.lis-note-green{background:#E1F5EE;border:0.5px solid #1D9E75;color:#085041}
+.lis-note-blue{background:#EEEDFE;border:0.5px solid #534AB7;color:#3C3489}
+.lis-note-warn{background:#FAEEDA;border:0.5px solid #EF9F27;color:#633806}
+.lis-day-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.lis-day-title{font-size:14px;font-weight:600;color:var(--c-text)}
+.lchip{display:inline-flex;font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.lchip-pink{background:#FBEAF0;color:#72243E;border:0.5px solid #993556}
+.lchip-info{background:#EEEDFE;color:#3C3489;border:0.5px solid #534AB7}
+.lchip-green{background:#E1F5EE;color:#085041;border:0.5px solid #1D9E75}
+.lchip-warn{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+.lbox{border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white);margin-bottom:8px}
+.lbox-hdr{padding:7px 12px;font-size:11px;font-weight:600;color:#fff;background:#993556}
+.lbox-hdr.optB{background:#0F6E56}
+.lbox-hdr.chosen{background:#185FA5}
+.lalt-btn{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-sub);background:var(--c-bg);border:0.5px solid var(--c-border);border-radius:8px;padding:5px 11px;cursor:pointer;margin-bottom:8px;transition:all .15s}
+.lalt-btn:hover{border-color:#888;color:var(--c-text)}
+.lalt-wrap{display:none;border:0.5px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-white);margin-bottom:8px}
+.lalt-wrap.open{display:block}
+.lalt-hdr{padding:7px 12px;font-size:11px;font-weight:600;color:#fff;background:#0F6E56}
+.lrows{padding:4px 0}
+.lrow{display:grid;grid-template-columns:48px 1fr;padding:3px 12px;gap:4px;align-items:baseline}
+.lt{font-size:10px;font-weight:600;color:var(--c-sub);line-height:1.4}
+.lm{font-size:12px;color:var(--c-text);line-height:1.4}
+.ls{font-size:11px;color:var(--c-sub);line-height:1.3;margin-top:1px}
+.lsep{height:0.5px;background:var(--c-border);margin:2px 12px}
+.lic{display:inline-flex;font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;margin-left:3px;vertical-align:middle;white-space:nowrap}
+.lic-str{background:#E6F1FB;color:#0C447C}
+.lic-nat{background:#E1F5EE;color:#085041}
+.lic-sta{background:#EEEDFE;color:#3C3489}
+.lic-boo{background:#FAEEDA;color:#633806}
+.lic-kas{background:#EAF3DE;color:#27500A}
+.lic-mkt{background:#FAEEDA;color:#633806}
+.lextras{margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.lebox{border-radius:10px;border:0.5px solid var(--c-border);overflow:hidden}
+.lebox-hdr{padding:6px 11px;font-size:11px;font-weight:600;color:#fff}
+.lehdr-halal{background:#6D3078}
+.lehdr-veggie{background:#2E7D32}
+.lehdr-islam{background:#1A6B4A}
+.lebox-body{padding:5px 11px 7px}
+.leitem{font-size:11px;color:var(--c-text);padding:3px 0;border-bottom:0.5px solid var(--c-border);line-height:1.4}
+.leitem:last-child{border-bottom:none}
+.lesub{font-size:10px;color:var(--c-sub);margin-top:1px}
+.llog{background:var(--c-bg);border:0.5px solid var(--c-border);border-radius:8px;padding:5px 11px;margin-bottom:8px;font-size:10px;color:var(--c-sub);display:flex;gap:10px;flex-wrap:wrap}
+a.llink{color:inherit;text-decoration:none;border-bottom:0.5px dotted var(--c-border)}
+a.llink:hover{border-bottom-color:var(--c-text)}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tip-card{border:0.5px solid var(--c-border);border-radius:10px;padding:12px 14px;background:var(--c-white)}
+.tip-title{font-size:12px;font-weight:600;color:var(--c-text);margin-bottom:4px}
+.tip-body{font-size:11px;color:var(--c-sub);line-height:1.5}
+@media(max-width:580px){.lextras{grid-template-columns:1fr 1fr}.tips-grid{grid-template-columns:1fr}}
+</style>
+
+<div class="lis-tabs">
+  <div class="lis-tab active" onclick="showLis('l16',this)">Wo 16/9 — Aankomst</div>
+  <div class="lis-tab" onclick="showLis('l17',this)">Do 17/9 — Volle dag</div>
+  <div class="lis-tab" onclick="showLis('l18',this)">Vr 18/9 — Checkout</div>
+  <div class="lis-tab" onclick="showLis('ltips',this)">💡 Tips & praktisch</div>
+</div>
+
+<!-- WO 16/9 — AANKOMST -->
+<div id="l16" class="lis-panel active">
+  <div class="lis-day-hdr"><span class="lis-day-title">Woensdag 16 september — Aankomst Lissabon</span><span class="lchip lchip-pink">Check-in ~16:00</span></div>
+  <div class="lis-note lis-note-warn">⚠️ Lissabon = heuvelig. Buggy werkt enkel in Belém en Parque das Nações. Mouraria en Alfama → carrier voor Amani. Kasseien zijn overal.</div>
+  <div class="llog"><span>🚗 Alvor → Lissabon: 2u30 (280 km)</span><span>🚗 Pauze Setúbal: +20 min</span><span>🚗 Parking: hotel of ondergrondse garage Baixa/Chiado</span><span>🚇 Metro: meest praktisch in Lissabon</span></div>
+  <div class="lbox"><div class="lbox-hdr">🌆 Aankomst + avondverkenning Mouraria</div><div class="lrows">
+    <div class="lrow"><div class="lt">16:00</div><div><div class="lm">Inchecken hotel</div><div class="ls">Auto parkeren — hotel of ondergrondse garage</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">17:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Mouraria+Lisbon+Portugal" target="_blank">Mouraria wijk verkennen</a><span class="lic lic-sta">Wijk</span></div><div class="ls">Historische Moorse wijk — smal en sfeervol, carrier voor Amani</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">18:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Martim+Moniz+Square+Lisbon+Portugal" target="_blank">Largo Martim Moniz</a><span class="lic lic-sta">Plein</span></div><div class="ls">Multicultureel plein — Mercado Fusão, eetentjes, sfeer. Buggy-vriendelijk!</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">19:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Rua+do+Benformoso+Mouraria+Lisbon+Portugal" target="_blank">Avondeten Rua do Benformoso</a></div><div class="ls">Hoofdstraat Mouraria — Bengalese curry, Marokkaanse restaurants, halal volledig</div></div></div>
+  </div></div>
+  <div class="lextras">
+    <div class="lebox"><div class="lebox-hdr lehdr-halal">🕌 Halal — Mouraria concentratie</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Rua+do+Benformoso+Mouraria+Lisbon" target="_blank">Rua do Benformoso</a><div class="lesub">Bengalese curry houses — €6–12/persoon. Authentiek en goedkoop.</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Taste+of+Pakistan+Mouraria+Lisbon" target="_blank">Taste of Pakistan — Mouraria</a><div class="lesub">Biryani, karahi, halal vlees</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Cantinho+do+Aziz+Lisbon" target="_blank">Cantinho do Aziz</a><div class="lesub">Mozambikaans-Portugees — halal, uniek in Lissabon</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-veggie">🌿 Vegetarisch</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Mercado+Fusao+Martim+Moniz+Lisbon" target="_blank">Mercado Fusão — Martim Moniz</a><div class="lesub">Multiculturele foodhall — veggie opties, aziatisch, Afrikaans</div></div>
+      <div class="leitem">Açorda à Alentejana<div class="lesub">Broodsoep met knoflook en koriander — op elk traditioneel menu</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-islam">☪️ Islamitisch Mouraria</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Mouraria+Lisbon+Portugal" target="_blank">Mouraria = "Moorse wijk"</a><div class="lesub">Moren mochten hier blijven wonen na de Reconquista 1147. Geboorteplaats Fado.</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Talho+Al+Madina+Mouraria+Lisbon" target="_blank">Talho Al Madina — Mouraria</a><div class="lesub">Marokkaanse slager — halal vlees en kruiden</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- DO 17/9 — VOLLE DAG -->
+<div id="l17" class="lis-panel">
+  <div class="lis-day-hdr"><span class="lis-day-title">Donderdag 17 september — Volle dag Lissabon</span><span class="lchip lchip-info">Beste dag</span></div>
+  <div class="lis-note lis-note-blue">💡 Strategie: ochtend Belém (buggy-vriendelijk, flat), namiddag Alfama/Castelo (steil, carrier voor Amani), avond Chiado of Baixa.</div>
+  <div class="llog"><span>🚇 Tram 15E: Praça Figueira → Belém (25 min)</span><span>🚗 of taxi/Uber: €12–15 naar Belém</span><span>🚶 Belém → Jerónimos: 5 min wandelen</span><span>🚇 Metro: Baixa-Chiado of Rossio</span></div>
+
+  <div class="lbox"><div class="lbox-hdr">☀️ Ochtend — Belém (buggy-vriendelijk)</div><div class="lrows">
+    <div class="lrow"><div class="lt">09:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Pasteis+de+Belem+Lisbon+Portugal" target="_blank">Pastéis de Belém</a></div><div class="ls">Originele nata bakkerij — Rua de Belém 84. Wachtrij vroeg kort.</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">10:00</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Mosteiro+dos+Jeronimos+Belem+Lisbon" target="_blank">Jerónimos Klooster</a><span class="lic lic-kas">UNESCO</span></div><div class="ls">Manueline architectuur — indrukwekkend voor Amani. Open 10:00–17:30. Boek online!</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">11:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Torre+de+Belem+Lisbon+Portugal" target="_blank">Torre de Belém</a><span class="lic lic-kas">UNESCO</span></div><div class="ls">Iconische toren langs de Taag — waterfront is flat en buggy-vriendelijk</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">12:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Padrao+dos+Descobrimentos+Lisbon" target="_blank">Padrão dos Descobrimentos</a><span class="lic lic-sta">Monument</span></div><div class="ls">Ontdekkingsmonument langs de Taag — groot plein, Amani kan vrij lopen</div></div></div>
+  </div></div>
+
+  <div class="lbox"><div class="lbox-hdr">🌤️ Namiddag — Castelo + Alfama (carrier voor Amani!)</div><div class="lrows">
+    <div class="lrow"><div class="lt">14:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Castelo+de+Sao+Jorge+Lisbon+Portugal" target="_blank">Castelo de São Jorge</a><span class="lic lic-kas">Kasteel</span></div><div class="ls">Moorse kasteel 11e eeuw — panorama over Lissabon. Steil pad, carrier nodig!</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">16:00</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Miradouro+das+Portas+do+Sol+Lisbon" target="_blank">Miradouro das Portas do Sol</a><span class="lic lic-sta">Uitzicht</span></div><div class="ls">Panoramisch terras over Alfama — 10 min wandelen van kasteel</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">16:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Alfama+District+Lisbon+Portugal" target="_blank">Alfama buurt wandeling</a><span class="lic lic-sta">Wijk</span></div><div class="ls">Smalle steegjes, azulejos, Fado muziek — carrier voor Amani</div></div></div>
+  </div></div>
+
+  <div class="lbox"><div class="lbox-hdr">🌙 Avond — Baixa / Chiado (buggy-vriendelijk)</div><div class="lrows">
+    <div class="lrow"><div class="lt">18:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Praca+do+Comercio+Lisbon+Portugal" target="_blank">Praça do Comércio</a><span class="lic lic-sta">Plein</span></div><div class="ls">Groot waterfront plein — Amani kan vrij lopen, Taag uitzicht</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">19:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Baixa+Chiado+Restaurants+Lisbon" target="_blank">Avondeten Baixa of Chiado</a></div><div class="ls">Restaurants open v.a. 19:00 — kies een terrastafel</div></div></div>
+  </div></div>
+
+  <div class="lextras">
+    <div class="lebox"><div class="lebox-hdr lehdr-halal">🕌 Halal</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Zaafran+Indian+Restaurant+Lisbon" target="_blank">Zaafran — halal Indiaas</a><div class="lesub">Rua de São José — gecertificeerd door Instituto Halal de Portugal</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Mezze+Syrian+Restaurant+Arroios+Lisbon" target="_blank">Mezze — Syrisch Arroios</a><div class="lesub">Halal gecertificeerd — hummus, shawarma, mezze</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Ali+Baba+Kebab+Rua+da+Palma+Lisbon" target="_blank">Ali Baba Kebab — Rua da Palma</a><div class="lesub">Doner, shawarma — laat open</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-veggie">🌿 Vegetarisch</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Time+Out+Market+Lisbon+Portugal" target="_blank">Time Out Market Lisbon</a><div class="lesub">Foodhall in Cais do Sodré — groot veggie aanbod, meerdere chefs</div></div>
+      <div class="leitem">Queijadas de Sintra<div class="lesub">Kleine zoete kaastaartjes uit Sintra — te koop in elke bakkerij</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-islam">☪️ Islamitisch erfgoed</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Castelo+de+Sao+Jorge+Lisbon+Portugal" target="_blank">Castelo de São Jorge</a><div class="lesub">Moorse kasteel 11e eeuw — sporen van moskee gevonden bij opgravingen</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Se+Cathedral+Lisbon+Portugal" target="_blank">Sé Kathedraal</a><div class="lesub">Gebouwd op ruïnes van een Moorse moskee — 12e eeuw</div></div>
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Mosteiro+dos+Jeronimos+Belem+Lisbon" target="_blank">Jerónimos Klooster</a><div class="lesub">Manueline stijl bevat Arabische ornamentele invloeden</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- VR 18/9 — CHECKOUT -->
+<div id="l18" class="lis-panel">
+  <div class="lis-day-hdr"><span class="lis-day-title">Vrijdag 18 september — Checkout dag</span><span class="lchip lchip-warn">Lange rijdag naar Poitiers!</span></div>
+  <div class="lis-note lis-note-warn">⚠️ Lissabon → Poitiers = ~1.260 km, ~10–11u rijden. Vertrek 09:00 → aankomst ~20:00. Optie A (ochtend checkout) sterk aanbevolen.</div>
+
+  <div class="lbox"><div class="lbox-hdr chosen">✅ Optie A — Na ontbijt vertrek (aanbevolen)</div><div class="lrows">
+    <div class="lrow"><div class="lt">07:30</div><div><div class="lm">Ontbijt hotel — vroeg</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">09:00</div><div><div class="lm">Checkout hotel + wagen laden</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">09:30</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Miradouro+da+Graca+Lisbon+Portugal" target="_blank">Optioneel: Miradouro da Graça</a><span class="lic lic-sta">Uitzicht</span></div><div class="ls">15 min — panorama over Lissabon. Nieuw funiculier (2024). Daarna onmiddellijk vertrek.</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">10:00</div><div><div class="lm">Vertrek Lissabon → A1 richting Porto → Noord-Spanje</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">12:00</div><div><div class="lm">Pauze 1 — Aveiro of Coimbra (+30 min)</div><div class="ls">230 km — koffie, Amani bewegen</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">14:30</div><div><div class="lm">Pauze 2 — Vigo of Santiago (+60 min)</div><div class="ls">430 km — middagmaal</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">18:30</div><div><div class="lm">Pauze 3 — Burgos (+20 min)</div><div class="ls">850 km — koffie voor laatste stuk</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">22:00</div><div><div class="lm">Aankomst Poitiers</div><div class="ls">Hotel met late check-in — bevestig vooraf (aankomst ~20:00)</div></div></div>
+  </div></div>
+
+  <button class="lalt-btn" onclick="toggleLalt('lalt18')">▼ Toon Optie B — Middag checkout</button>
+  <div id="lalt18" class="lalt-wrap"><div class="lalt-hdr">Optie B — Checkout rond de middag (risico!)</div><div class="lrows">
+    <div class="lrow"><div class="lt">09:00</div><div><div class="lm">Ontbijt hotel</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">10:00</div><div><div class="lm"><a class="llink" href="https://maps.google.com/?q=Bairro+Alto+Lisbon+Portugal" target="_blank">Bairro Alto of Príncipe Real</a><span class="lic lic-sta">Wijk</span></div><div class="ls">Relaxed ochtend winkelen of koffie</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">12:00</div><div><div class="lm">Checkout hotel — auto halen uit parking</div></div></div><div class="lsep"></div>
+    <div class="lrow"><div class="lt">12:30</div><div><div class="lm">Vertrek Lissabon</div><div class="ls">⚠️ 2,5u later dan Optie A = aankomst Poitiers ~22:30</div></div></div>
+  </div></div>
+
+  <div class="lextras">
+    <div class="lebox"><div class="lebox-hdr lehdr-halal">🕌 Halal ontbijt/lunch</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Rua+do+Benformoso+Mouraria+Lisbon" target="_blank">Mouraria — ochtend</a><div class="lesub">Bengalese theehuizen open v.a. 08:00</div></div>
+      <div class="leitem">Pauze Vigo — halal kebab<div class="lesub">Vigo centrum heeft Turkse en Marokkaanse restaurants</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-veggie">🌿 Onderweg</div><div class="lebox-body">
+      <div class="leitem">Verse vijgen + queijo fresco<div class="lesub">Inkopen in Lissabon supermarkt voor de rit</div></div>
+      <div class="leitem">Bacalhau com broa<div class="lesub">Kabeljauw met maïsbrood — bij tankstations langs A1</div></div>
+    </div></div>
+    <div class="lebox"><div class="lebox-hdr lehdr-islam">☪️ Moskee Lissabon</div><div class="lebox-body">
+      <div class="leitem"><a class="llink" href="https://maps.google.com/?q=Mesquita+Central+de+Lisboa+Portugal" target="_blank">Mesquita Central de Lisboa</a><div class="lesub">Av. José Malhoa — grootste moskee Portugal. Open voor bezoekers.</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- TIPS & PRAKTISCH -->
+<div id="ltips" class="lis-panel">
+  <div class="section-title">💡 Praktische tips Lissabon</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-title">🚗 Parkeren</div>
+      <div class="tip-body">Ondergrondse garages Baixa of Chiado (~€18–25/dag). Vermijd straatparkeren — hoge kans op boete. Hotel parking checken bij boeking. Auto best 1× parkeren en metro/tram gebruiken.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🚇 Openbaar vervoer</div>
+      <div class="tip-body">Lisboa Card (€22/24u) = onbeperkt metro, tram en bus + gratis toegang musea. Tram 28 = iconisch maar overvol. Tram 15E naar Belém is praktischer. Uber beschikbaar en goedkoop (~€8–12 meeste ritten).</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">👶 Amani-tips Lissabon</div>
+      <div class="tip-body">Carrier verplicht in Mouraria, Alfama en Castelo (steile kasseien). Buggy werkt in Belém en Parque das Nações. Praça do Comércio en Terreiro do Paço zijn grote open pleinen waar Amani vrij kan lopen. Restaurants eten vroeg voor peuters: 18:30–19:00.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">💰 Budget Lissabon</div>
+      <div class="tip-body">Jerónimos €15/pp (online goedkoper). Castelo São Jorge €15/pp. Torre de Belém €8/pp. Tram en metro €2/rit of Lisboa Card. Restaurant €15–25/pp. Halal Mouraria: €6–12/pp. Totaal ~€120–150 voor 2 volwassenen + Amani gratis overal onder 6j.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">☀️ September Lissabon</div>
+      <div class="tip-body">Minder druk dan augustus maar nog warm (~26°C). Veel evenementen afgelopen. Lange rijwachtrijen Jerónimos en Belém tower vroeg ochtend vermijden — boek online. Zonsondergang vanaf Miradouros spectaculair in september.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🕌 Halal supermarkt</div>
+      <div class="tip-body"><a class="llink" href="https://maps.google.com/?q=Talho+Al+Madina+Mouraria+Lisbon" target="_blank">Talho Al Madina — Mouraria</a>: Marokkaanse slager voor halal vlees en kruiden. <a class="llink" href="https://maps.google.com/?q=Halal+Bazar+Lisbon+Portugal" target="_blank">Halal Bazar</a>: nabij R. Alves Torgo — lam, kip, geit. Instituto Halal de Portugal certificeert restaurants.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showLis(id, el) {
+  document.querySelectorAll('.lis-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.lis-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function toggleLalt(id) {
+  const box = document.getElementById(id);
+  const open = box.classList.toggle('open');
+  const btn = box.previousElementSibling;
+  if (open) { btn.textContent = btn.textContent.replace('▼','▲').replace('Toon','Verberg'); }
+  else { btn.textContent = btn.textContent.replace('▲','▼').replace('Verberg','Toon'); }
+}
+</script>
+
+</main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: BUDGET (wachtwoord-beveiligd)                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="page-budget" class="page">
+
+<style>
+.pw-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:32px 16px;text-align:center}
+.pw-icon{font-size:48px;margin-bottom:16px}
+.pw-title{font-size:18px;font-weight:700;color:var(--c-text);margin-bottom:6px}
+.pw-sub{font-size:13px;color:var(--c-sub);margin-bottom:24px}
+.pw-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.pw-input{font-size:14px;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:8px;outline:none;width:160px;letter-spacing:3px;text-align:center;font-family:monospace}
+.pw-input:focus{border-color:var(--c-header)}
+.pw-btn{padding:10px 20px;background:var(--c-header);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.pw-btn:hover{opacity:.9}
+.pw-error{margin-top:12px;font-size:12px;color:#993556;font-weight:600;display:none}
+.budget-content{display:none}
+.budget-content.unlocked{display:block}
+</style>
+
+<!-- Wachtwoord scherm -->
+<div class="pw-screen" id="pw-screen">
+  <div class="pw-icon">🔒</div>
+  <div class="pw-title">Beveiligd tabblad</div>
+  <div class="pw-sub">Dit tabblad bevat persoonlijke financiële informatie.<br>Voer het wachtwoord in om toegang te krijgen.</div>
+  <div class="pw-form">
+    <input class="pw-input" type="password" id="pw-input" placeholder="••••••" maxlength="10" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">Openen</button>
+  </div>
+  <div class="pw-error" id="pw-error">Ongeldig wachtwoord. Probeer opnieuw.</div>
+</div>
+
+<!-- Budget inhoud — verborgen tot wachtwoord correct -->
+<div class="budget-content" id="budget-content">
+  <div class="hero">
+    <h1>💰 Budget</h1>
+    <p>Portugal Roadtrip 2026 &nbsp;|&nbsp; Persoonlijk — niet openbaar</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">€4.000</div><div class="stat-lbl">Totaal budget</div></div>
+      <div class="stat"><div class="stat-val">€3.170</div><div class="stat-lbl">Geraamd</div></div>
+      <div class="stat" style="border-color:var(--c-picos)"><div class="stat-val" style="color:#1D9E75">€830</div><div class="stat-lbl">Buffer (~21%)</div></div>
+      <div class="stat"><div class="stat-val">15</div><div class="stat-lbl">Nachten</div></div>
+      <div class="stat"><div class="stat-val">~€217</div><div class="stat-lbl">Per nacht gem.</div></div>
+    </div>
+  </div>
+  <main>
+    <div class="budget-section">
+      <div class="section-title">💰 Budgetoverzicht per post</div>
+      <table class="budget">
+        <thead><tr><th>Post</th><th>Detail</th><th>Bedrag</th></tr></thead>
+        <tbody>
+          <tr><td>Peñas Arriba — Picos</td><td>1 nacht</td><td>€90</td></tr>
+          <tr><td>Alvor / Prainha Beach</td><td>9 nachten, ma 7 – di 15 sept</td><td>€1.250</td></tr>
+          <tr><td>Lissabon</td><td>2 nachten, wo 16 – do 17 sept</td><td>€250</td></tr>
+          <tr><td>Poitiers</td><td>2 nachten, vr 18 – za 19 sept</td><td>€180</td></tr>
+          <tr><td>Brandstof</td><td>~4.500 km, ~8L/100km</td><td>€390</td></tr>
+          <tr><td>Tol</td><td>FR + ES + PT heen + terug (Ulys)</td><td>€140</td></tr>
+          <tr><td>Eten &amp; drinken</td><td>€40/dag × 16 dagen</td><td>€640</td></tr>
+          <tr><td>Activiteiten</td><td>Kabelbaan, Algarve, Lissabon, Poitiers</td><td>€260</td></tr>
+          <tr><td>Verzekering &amp; vignetten</td><td>Groene kaart uitbreiding, PT-tol</td><td>€50</td></tr>
+          <tr class="total"><td colspan="2"><strong>Geraamd totaal</strong></td><td><strong>€3.170</strong></td></tr>
+          <tr class="buffer"><td colspan="2">Buffer (resterend van €4.000)</td><td>€830</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;">
+        <button onclick="var d=this.nextElementSibling;d.style.display=d.style.display==='none'?'block':'none';this.textContent=this.textContent.includes('Toon')?'▲ Verberg opsplitsing':'▼ Toon gedetailleerde opsplitsing'" style="font-size:12px;background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;padding:7px 14px;cursor:pointer;color:var(--c-sub);font-weight:600;">▼ Toon gedetailleerde opsplitsing</button>
+        <div style="display:none;margin-top:10px;">
+          <table class="budget">
+            <thead><tr><th>Categorie</th><th>Item</th><th>Bedrag</th></tr></thead>
+            <tbody>
+              <tr style="background:#EEEDFE"><td colspan="3" style="font-weight:700;font-size:12px;">🏨 Verblijf</td></tr>
+              <tr><td>Peñas Arriba</td><td>1 nacht</td><td>€90</td></tr>
+              <tr><td>Alvor airbnb</td><td>9 nachten — €139/nacht gem.</td><td>€1.250</td></tr>
+              <tr><td>Lissabon hotel</td><td>2 nachten — €125/nacht gem.</td><td>€250</td></tr>
+              <tr><td>Poitiers hotel</td><td>1 nacht — parking inbegrepen</td><td>€100</td></tr>
+              <tr style="background:#EEEDFE"><td colspan="3" style="font-weight:700;font-size:12px;">⛽ Transport</td></tr>
+              <tr><td>Brandstof heen</td><td>Mechelen → Picos → Alvor (~1.640 km)</td><td>€150</td></tr>
+              <tr><td>Brandstof Algarve</td><td>Lokale dagtrips ~500 km</td><td>€45</td></tr>
+              <tr><td>Brandstof terug</td><td>Lissabon → Poitiers → Mechelen (~1.910 km)</td><td>€195</td></tr>
+              <tr><td>Tol Portugal</td><td>Via Verde / Ulys</td><td>€30</td></tr>
+              <tr><td>Tol Spanje</td><td>AP-wegen heen + terug</td><td>€55</td></tr>
+              <tr><td>Tol Frankrijk</td><td>A10 Poitiers–Parijs–Brussel</td><td>€55</td></tr>
+              <tr style="background:#EEEDFE"><td colspan="3" style="font-weight:700;font-size:12px;">🍽️ Eten &amp; drinken</td></tr>
+              <tr><td>Rijdagen (4 dagen)</td><td>Picknick + tankstation ~€25/dag</td><td>€100</td></tr>
+              <tr><td>Alvor (9 dagen)</td><td>€35/dag — zelf koken + eten buiten</td><td>€315</td></tr>
+              <tr><td>Lissabon (2 dagen)</td><td>€55/dag — restaurant + café</td><td>€110</td></tr>
+              <tr><td>Poitiers (1 dag)</td><td>€45/dag — avondeten + ontbijt</td><td>€45</td></tr>
+              <tr><td>Supermarktinkopen</td><td>Eerste grote inkoop + midweek</td><td>€70</td></tr>
+              <tr style="background:#EEEDFE"><td colspan="3" style="font-weight:700;font-size:12px;">🎯 Activiteiten</td></tr>
+              <tr><td>Fuente Dé kabelbaan</td><td>Picos — €10/pp × 2</td><td>€20</td></tr>
+              <tr><td>Dolfijnenboot Portimão</td><td>5emotions — ~€35/pp × 2</td><td>€70</td></tr>
+              <tr><td>Silves kasteel + museum</td><td>€15/pp + €8/pp × 2</td><td>€46</td></tr>
+              <tr><td>Lissabon musea</td><td>Jerónimos €15 + Castelo €15 × 2</td><td>€60</td></tr>
+              <tr><td>Bootjes Lagos/Alvor</td><td>Ponta da Piedade ~€15/pp × 2</td><td>€30</td></tr>
+              <tr><td>Overig / onvoorzien</td><td>Parkeren, inkom</td><td>€34</td></tr>
+              <tr style="background:#EEEDFE"><td colspan="3" style="font-weight:700;font-size:12px;">🛡️ Verzekering &amp; admin</td></tr>
+              <tr><td>Groene kaart uitbreiding</td><td>ES + PT</td><td>€25</td></tr>
+              <tr><td>Reisverzekering</td><td>3 personen</td><td>€25</td></tr>
+              <tr class="total"><td colspan="2"><strong>Totaal</strong></td><td><strong>€3.170</strong></td></tr>
+              <tr class="buffer"><td colspan="2">Buffer</td><td>€830 (~21%)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  const PW = '120991';
+  const SK = 'pt2026-budget-unlocked';
+
+  function checkPw() {
+    const val = document.getElementById('pw-input').value;
+    if (val === PW) {
+      unlock();
+      sessionStorage.setItem(SK, '1');
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  function unlock() {
+    document.getElementById('pw-screen').style.display = 'none';
+    document.getElementById('budget-content').classList.add('unlocked');
+  }
+
+  // Auto-unlock if already verified this session
+  if (sessionStorage.getItem(SK) === '1') { unlock(); }
+
+  // Expose globally so onclick works
+  window.checkPw = checkPw;
+})();
+</script>
+</div>
+
+<script>
+  // ── PAGE NAVIGATION ──────────────────────────────────────────
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    const page = document.getElementById('page-' + id);
+    if (page) {
+      page.classList.add('active');
+      const navEl = document.getElementById('nav-' + id);
+      if (navEl) navEl.classList.add('active');
+    }
+    window.scrollTo(0,0);
+  }
+
+  // ── REISSCHEMA: SCENARIO TOGGLE ──────────────────────────────
+  const tpl = document.getElementById('shared-days').content;
+  document.getElementById('shared-a').appendChild(tpl.cloneNode(true));
+  document.getElementById('shared-b').appendChild(tpl.cloneNode(true));
+
+  function setScenario(id) {
+    document.querySelectorAll('.scenario').forEach(s => s.classList.remove('visible'));
+    document.getElementById('scenario-' + id).classList.add('visible');
+    document.querySelectorAll('.toggle-btn').forEach((b,i) => {
+      b.classList.toggle('active', (id==='b' && i===0)||(id==='a' && i===1));
+    });
+  }
+
+  // ── VOORBEREIDING ────────────────────────────────────────────
+  const STORAGE_KEY = 'portugal2026-voorbereiding';
+
+  function saveState() {
+    const state = {};
+    document.querySelectorAll('.check-item').forEach((el,i) => { state[i] = el.classList.contains('done'); });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function loadState() {
+    try {
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      document.querySelectorAll('.check-item').forEach((el,i) => { if (state[i]) el.classList.add('done'); });
+    } catch(e) {}
+  }
+
+  function toggle(el) { el.classList.toggle('done'); saveState(); updateAll(); }
+
+  function toggleSectie(id) {
+    const body = document.getElementById('body-' + id);
+    const chev = document.getElementById('chev-' + id);
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+
+  function updateAll() {
+    const all  = document.querySelectorAll('.check-item');
+    const done = document.querySelectorAll('.check-item.done');
+    const pct  = all.length ? Math.round(done.length / all.length * 100) : 0;
+    document.getElementById('progress-text').textContent = done.length + ' van ' + all.length + ' afgevinkt';
+    document.getElementById('progress-pct').textContent  = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    ['s1','s2','s3','s4','s5','s6','s7'].forEach(id => {
+      const body = document.getElementById('body-' + id);
+      if (!body) return;
+      const items   = body.querySelectorAll('.check-item');
+      const checked = body.querySelectorAll('.check-item.done');
+      const badge   = document.getElementById('badge-' + id);
+      if (badge) badge.textContent = checked.length + ' / ' + items.length;
+      const banner  = document.getElementById('done-' + id);
+      if (banner) banner.style.display = (checked.length === items.length && items.length > 0) ? 'block' : 'none';
+    });
+    applyCurrentFilter();
+  }
+
+  let currentFilter = 'all';
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach((b,i) => {
+      b.classList.toggle('active', ['all','open','done'][i] === f);
+    });
+    applyCurrentFilter();
+  }
+
+  function applyCurrentFilter() {
+    document.querySelectorAll('.check-item').forEach(el => {
+      if (currentFilter === 'all')  { el.style.display = ''; return; }
+      el.style.display = (currentFilter === 'done') === el.classList.contains('done') ? '' : 'none';
+    });
+  }
+
+  // ── GOOGLE SHEETS SYNC ──────────────────────────────────────
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxDWIaUfNxngWHaYRNxqrrJL_ll6PmdVXKrrgOcH_Y2PqDMthc6zJMg3upam6mT02aKkQ/exec';
+  let syncTimeout = null;
+  let isSyncing = false;
+
+  function showSyncStatus(msg, color) {
+    let bar = document.getElementById('sync-bar');
+    if (!bar) return;
+    bar.textContent = msg;
+    bar.style.background = color || '#1D9E75';
+    bar.style.display = 'block';
+    clearTimeout(bar._hide);
+    bar._hide = setTimeout(() => { bar.style.display = 'none'; }, 3000);
+  }
+
+  async function saveToSheet() {
+    if (isSyncing) return;
+    isSyncing = true;
+    showSyncStatus('💾 Opslaan...', '#854F0B');
+    const items = [];
+    document.querySelectorAll('.check-item').forEach((el, i) => {
+      const nota = el.querySelector('.nota-input');
+      items.push({
+        id: i,
+        done: el.classList.contains('done'),
+        nota: nota ? nota.value : ''
+      });
+    });
+    try {
+      const url = SHEETS_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(items));
+      await fetch(url, { method: 'GET', mode: 'no-cors' });
+      showSyncStatus('✅ Opgeslagen in Google Sheets', '#1D9E75');
+    } catch(e) {
+      showSyncStatus('⚠️ Opslaan mislukt — lokaal bewaard', '#993556');
+    }
+    isSyncing = false;
+  }
+
+  async function loadFromSheet() {
+    showSyncStatus('🔄 Laden uit Google Sheets...', '#534AB7');
+    try {
+      const url = SHEETS_URL + '?action=load';
+      const resp = await fetch(url, { mode: 'cors' });
+      if (!resp.ok) throw new Error('load failed');
+      const data = await resp.json();
+      if (data && data.length > 0) {
+        document.querySelectorAll('.check-item').forEach((el, i) => {
+          const row = data.find(r => r.id == i);
+          if (row) {
+            if (row.done === true || row.done === 'TRUE') el.classList.add('done');
+            else el.classList.remove('done');
+            const nota = el.querySelector('.nota-input');
+            if (nota && row.nota) nota.value = row.nota;
+          }
+        });
+        showSyncStatus('✅ Geladen uit Google Sheets', '#1D9E75');
+      } else {
+        loadState(); // fallback lokaal
+        showSyncStatus('📋 Lokale data geladen', '#666660');
+      }
+    } catch(e) {
+      loadState(); // fallback lokaal
+      showSyncStatus('📋 Lokale data geladen (offline)', '#666660');
+    }
+    updateAll();
+  }
+
+  function scheduleSave() {
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(() => { saveState(); saveToSheet(); }, 800);
+  }
+
+  // Override toggle om ook sheet op te slaan
+  const _origToggle = toggle;
+  window.toggle = function(el) {
+    el.classList.toggle('done');
+    saveState();
+    updateAll();
+    scheduleSave();
+  };
+
+  loadFromSheet();
+</script>
+
+
+<div id="sync-bar" style="display:none;position:fixed;bottom:16px;right:16px;background:#1D9E75;color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:all .3s;">Synchroniseren...</div>
+</body>
+</html>
